@@ -109,6 +109,16 @@
         margin-bottom: 18px;
       }
 
+      .section-switch {
+        display: inline-flex;
+        gap: 8px;
+        padding: 6px;
+        margin-bottom: 18px;
+        border-radius: 999px;
+        background: rgba(15, 23, 42, 0.72);
+        border: 1px solid rgba(148, 163, 184, 0.14);
+      }
+
       .mode-switch {
         display: inline-flex;
         gap: 8px;
@@ -143,6 +153,14 @@
         background: rgba(56, 189, 248, 0.18);
         border-color: rgba(56, 189, 248, 0.42);
         color: #e0f2fe;
+      }
+
+      .content-section {
+        display: none;
+      }
+
+      .content-section.active {
+        display: block;
       }
 
       .toggle-btn {
@@ -371,6 +389,161 @@
         font-weight: 700;
       }
 
+      .commentary-section {
+        margin-top: 22px;
+      }
+
+      .commentary-card {
+        padding: 24px;
+      }
+
+      .commentary-header {
+        margin-bottom: 18px;
+      }
+
+      .commentary-header p {
+        color: var(--muted);
+        line-height: 1.65;
+        margin-bottom: 0;
+      }
+
+      .commentary-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .comment-item {
+        padding: 18px;
+        border-radius: 18px;
+        border: 1px solid rgba(148, 163, 184, 0.14);
+        background: rgba(15, 23, 42, 0.58);
+      }
+
+      .comment-item h3 {
+        margin-bottom: 8px;
+        font-size: 1rem;
+      }
+
+      .comment-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .comment-tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(56, 189, 248, 0.12);
+        color: #bae6fd;
+        font-size: 0.82rem;
+      }
+
+      .comment-text {
+        margin: 0 0 12px;
+        padding: 14px;
+        white-space: pre-line;
+        border-radius: 14px;
+        background: rgba(2, 6, 23, 0.42);
+        color: #e5eefb;
+        line-height: 1.6;
+        font-size: 0.95rem;
+      }
+
+      .comment-item ul {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .comment-example {
+        margin-top: 14px;
+        padding: 14px;
+        border-radius: 14px;
+        background: rgba(56, 189, 248, 0.08);
+        border: 1px solid rgba(56, 189, 248, 0.16);
+        color: #dbeafe;
+        line-height: 1.65;
+      }
+
+      .comment-example strong {
+        color: #f8fafc;
+      }
+
+      .comment-guide {
+        margin-bottom: 16px;
+        padding: 18px;
+        border-radius: 18px;
+        border: 1px solid rgba(148, 163, 184, 0.14);
+        background: rgba(15, 23, 42, 0.58);
+      }
+
+      .comment-guide strong {
+        color: #f8fafc;
+      }
+
+      .comment-guide p,
+      .comment-guide li {
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .reading-section {
+        margin-top: 22px;
+      }
+
+      .reading-card {
+        padding: 24px;
+      }
+
+      .reading-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .reading-item {
+        padding: 18px;
+        border-radius: 18px;
+        border: 1px solid rgba(148, 163, 184, 0.14);
+        background: rgba(15, 23, 42, 0.58);
+      }
+
+      .reading-item h3 {
+        margin-bottom: 10px;
+      }
+
+      .reading-item h4 {
+        margin: 14px 0 8px;
+        font-size: 0.98rem;
+      }
+
+      .reading-item ul {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .reading-item p {
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .qa-block {
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid rgba(148, 163, 184, 0.12);
+      }
+
+      .qa-block strong {
+        color: #f8fafc;
+      }
+
       @media (max-width: 680px) {
         .page {
           width: min(100% - 20px, 1180px);
@@ -391,12 +564,26 @@
           flex-direction: column;
           align-items: stretch;
         }
+
+        .commentary-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .reading-grid {
+          grid-template-columns: 1fr;
+        }
       }
     </style>
   </head>
   <body>
     <main class="page">
-      <section>
+      <div class="section-switch">
+        <button class="mode-btn active" id="show-test" type="button">Test</button>
+        <button class="mode-btn" id="show-comments" type="button">Comentarios</button>
+        <button class="mode-btn" id="show-readings" type="button">Fichas de lectura</button>
+      </div>
+
+      <section class="content-section active" id="test-section">
         <article class="card quiz-card">
           <div class="toolbar">
             <div class="control-group">
@@ -449,6 +636,296 @@
               <div class="bar"><span id="progress-bar"></span></div>
             </div>
             <div class="result-box" id="result-box"></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="content-section" id="comments-section">
+        <article class="card commentary-card commentary-section">
+          <div class="commentary-header">
+            <h2>Comentarios de texto</h2>
+            <p>Esquema breve para organizar cualquier comentario de poesía, prosa, historiografía, drama o narrativa.</p>
+          </div>
+
+          <div class="comment-guide">
+            <h3>Guía rápida de comentario</h3>
+            <ul>
+              <li><strong>Contextual:</strong> autor, dinastía, género, corriente y función del texto.</li>
+              <li><strong>Formal:</strong> número de versos o tipo de prosa, rima, paralelismos, estructura y voz.</li>
+              <li><strong>Lingüístico:</strong> tono elevado o sencillo, repeticiones, imágenes, tono, musicalidad, fórmulas.</li>
+              <li><strong>Semántico:</strong> tema, símbolos, intención, lectura moral, política, religiosa o emocional.</li>
+            </ul>
+            <p><strong>Orden útil:</strong> primero sitúa el texto, después describe la forma, luego comenta recursos de lengua e imágenes, y al final explica el sentido global y la intención.</p>
+          </div>
+
+          <div class="commentary-grid">
+            <article class="comment-item">
+              <div class="comment-meta">
+                <span class="comment-tag">Ejemplo comentario</span>
+                <span class="comment-tag">Poesía Tang</span>
+              </div>
+              <h3>Li Bai · Jingyesi 靜夜思</h3>
+              <p class="comment-text">床前明月光
+疑是地上霜。
+舉頭望明月，
+低頭思故鄉。
+
+"Un raig de lluna banya la cambra,
+el terra sembla cobert de gebre.
+Alce el cap, mire la lluna,
+baixe el cap, recorde la meua terra."</p>
+              <ul>
+                <li>Comenta por qué encaja como <em>jueju</em> y qué rasgos del <em>jintishi</em> aparecen.</li>
+                <li>Relaciona luna, escarcha, elevación y descenso de la mirada con nostalgia, viaje y exilio.</li>
+                <li>Señala la sencillez verbal frente a la densidad simbólica.</li>
+              </ul>
+              <p class="comment-example"><strong>Comentario de ejemplo:</strong> Este poema de Li Bai pertenece a la poesía Tang y adopta la forma breve del <em>jueju</em>, con cuatro versos de cinco caracteres. La imagen de la luna y de la escarcha activa una atmósfera de quietud y distancia, mientras el gesto de alzar y bajar la cabeza articula un paralelismo físico y emocional. El sentido central es la nostalgia por la tierra natal, expresada con una gran sencillez verbal y una fuerte carga simbólica.</p>
+            </article>
+
+            <article class="comment-item">
+              <div class="comment-meta">
+                <span class="comment-tag">Unidad 2</span>
+                <span class="comment-tag">Shijing</span>
+              </div>
+              <h3>Shijing 詩經, poema 206</h3>
+              <p class="comment-text">No empenyis el gran carro,
+No et carreguis de neguits,
+només alçarà pols al vent.
+no en sortiràs, de la foscor.
+
+No empenyis el gran carro,
+No et carreguis de neguits,
+la pols enfosqueix el camí,
+només et pesaran l’ànima.</p>
+              <ul>
+                <li>Identifica repeticiones, paralelismos y la posible lectura moral o política del "gran carro".</li>
+                <li>Explica por qué puede leerse como oda con instrucción velada al gobernante.</li>
+                <li>Relaciona forma repetitiva y tono admonitorio.</li>
+              </ul>
+              <p class="comment-example"><strong>Comentario de ejemplo:</strong> El poema pertenece al <em>Shijing</em> y puede vincularse al grupo de las odas. La repetición insistente de “no empujes el gran carro” convierte el texto en una advertencia de tono moral y político. La imagen del carro y del polvo funciona como metáfora del mal gobierno o de la presión excesiva sobre el pueblo. La sencillez expresiva se combina con un claro valor didáctico.</p>
+            </article>
+
+            <article class="comment-item">
+              <div class="comment-meta">
+                <span class="comment-tag">Unidad 2</span>
+                <span class="comment-tag">Escritura temprana</span>
+              </div>
+              <h3>Inscripción oracular</h3>
+              <p class="comment-text">«El dia guichou es realitza la fractura, Zheng fa la divinació. Entre aquest dia i el dia dingsi, atacarem Zhou... El pròxim dia jiazi, el derrotarem.»</p>
+              <ul>
+                <li>Comenta la relación entre escritura, adivinación, poder político y legitimidad religiosa.</li>
+                <li>Señala el valor formular, repetitivo y registral del texto.</li>
+                <li>Útil para comentario de orígenes de la escritura y de prosa muy temprana.</li>
+              </ul>
+              <p class="comment-example"><strong>Comentario de ejemplo:</strong> Este fragmento de <em>jiaguwen</em> muestra una escritura todavía muy ligada al acto ritual de la adivinación. Su valor no es estético en sentido moderno, sino político y religioso, porque registra decisiones militares bajo una legitimación sagrada. La repetición de fechas y acciones revela una prosa formular y archivística, propia de los primeros usos estatales de la escritura en China.</p>
+            </article>
+
+            <article class="comment-item">
+              <div class="comment-meta">
+                <span class="comment-tag">Unidad 2</span>
+                <span class="comment-tag">Prosa temprana</span>
+              </div>
+              <h3>Shujing · Arenga de Mu</h3>
+              <p class="comment-text">«Fou un dia jiazi, a l’aurora. Arribà el rei al territori Shang, al camp Mu. Feu una arenga... “Oh grans prínceps de països amics... alceu les vostres destrals, aplegueu els vostres escuts, aixequeu les vostres llances, ara us parlaré.”»</p>
+              <ul>
+                <li>Observa el carácter ceremonial, político y exhortativo del discurso.</li>
+                <li>Relaciona enumeraciones, repeticiones y frases breves con la prosa temprana del <em>Shujing</em>.</li>
+                <li>Comenta la función de la voz regia y la dimensión pública del texto.</li>
+              </ul>
+              <p class="comment-example"><strong>Comentario de ejemplo:</strong> La “Arenga de Mu” pertenece al <em>Shujing</em> y ejemplifica una prosa temprana de carácter político. La voz del rey organiza el texto como discurso público y ceremonial, con enumeraciones de cargos y fórmulas apelativas que refuerzan la autoridad. La intención principal es movilizar y legitimar la acción colectiva, por lo que forma, contenido y función política quedan estrechamente unidos.</p>
+            </article>
+
+            <article class="comment-item">
+              <div class="comment-meta">
+                <span class="comment-tag">Unidad 2</span>
+                <span class="comment-tag">Feng</span>
+              </div>
+              <h3>Zijin 子衿</h3>
+              <p class="comment-text">«Tot i que no puc venir a veure’t,
+home de la camisa blava,
+fa temps que penso en tu.
+... Un dia sense veure’t,
+se’m fa com tres mesos.»</p>
+              <ul>
+                <li>Explica por qué se vincula a los <em>feng</em> o aires del reino.</li>
+                <li>Comenta la sencillez del lenguaje y la intensidad afectiva.</li>
+                <li>Relaciona repetición, espera y temporalidad amorosa.</li>
+              </ul>
+              <p class="comment-example"><strong>Comentario de ejemplo:</strong> Este poema del <em>Shijing</em> encaja bien en los <em>feng</em> por su tono cercano, su lenguaje sencillo y su temática afectiva. La espera amorosa se intensifica mediante repeticiones y mediante la dilatación subjetiva del tiempo, resumida en la idea de que un día sin ver al amado parece durar meses. La emoción se expresa sin artificio excesivo, pero con gran eficacia lírica.</p>
+            </article>
+
+            <article class="comment-item">
+              <div class="comment-meta">
+                <span class="comment-tag">Unidad 3</span>
+                <span class="comment-tag">Historiografía</span>
+              </div>
+              <h3>Sima Qian · episodio de Sunzi</h3>
+              <p class="comment-text">«Sunzi, nascut al regne de Qi, va presentar el seu llibre L'art de la guerra al rei Helu de Wu... “Et veus amb prou valor per provar-ho també amb dones?” “Sí.” ... “Si les ordres no són clares, la culpa és del comandant.”»</p>
+              <ul>
+                <li>Comenta el tono narrativo de la biografía historiográfica y la construcción ejemplar del personaje.</li>
+                <li>Señala diálogo, anécdota y función moral dentro de la historiografía Han.</li>
+                <li>Puede comentarse como cruce entre historia, retrato y ejemplaridad.</li>
+              </ul>
+              <p class="comment-example"><strong>Comentario de ejemplo:</strong> El episodio de Sunzi en el <em>Shiji</em> muestra cómo la historiografía Han incorpora recursos narrativos como el diálogo y la anécdota. No solo informa sobre un personaje, sino que construye un ejemplo de disciplina, autoridad y capacidad estratégica. La escena tiene ritmo dramático y una clara intención ejemplar, de modo que historia y literatura quedan estrechamente relacionadas.</p>
+            </article>
+
+            <article class="comment-item">
+              <div class="comment-meta">
+                <span class="comment-tag">Unidad 5</span>
+                <span class="comment-tag">Poesía Tang</span>
+              </div>
+              <h3>Du Fu · Wangchun 春望</h3>
+              <p class="comment-text">«En veure les flors sent ganes de plorar,
+el cant dels ocells assossega la pena de la separació.
+Fa tres mesos que els merlets estan encesos,
+per escriure a casa he gastat la meua fortuna.
+Em rasque els escassos cabells blancs,
+una agulla de ganxo ja no podria subjectar-los.»</p>
+              <ul>
+                <li>Relaciona paisaje primaveral y crisis histórica con emoción personal.</li>
+                <li>Comenta la diferencia entre naturaleza externa y desgaste humano.</li>
+                <li>Sirve para comparar realismo social de Du Fu con el lirismo de Li Bai.</li>
+              </ul>
+              <p class="comment-example"><strong>Comentario de ejemplo:</strong> En este poema de Du Fu, la primavera no aparece como simple belleza natural, sino como contraste doloroso con la guerra y la separación. Las flores y los pájaros desencadenan el llanto y la melancolía, mientras el deterioro físico del sujeto poético refleja la crisis histórica. El poema combina emoción íntima y conciencia social, rasgo central del realismo de Du Fu.</p>
+            </article>
+
+            <article class="comment-item">
+              <div class="comment-meta">
+                <span class="comment-tag">Unidad 5</span>
+                <span class="comment-tag">Poesía Tang</span>
+              </div>
+              <h3>Wang Wei · Luzhai 鹿柴</h3>
+              <p class="comment-text">«A la muntanya solitària no hi ha ningú,
+només la remor de les paraules.
+Amb els últims rajos m’endinse cap al bosc...»</p>
+              <ul>
+                <li>Comenta el vacío, el eco, la luz y el paisaje interiorizado.</li>
+                <li>Relaciona brevedad, sugerencia y contemplación con poesía de naturaleza.</li>
+                <li>Observa cómo el poema trabaja presencia y ausencia.</li>
+              </ul>
+              <p class="comment-example"><strong>Comentario de ejemplo:</strong> Wang Wei construye aquí una escena mínima basada en silencio, eco y luz tardía. La ausencia humana visible se compensa con la presencia sonora, lo que genera un paisaje contemplativo y casi espiritual. La brevedad del texto y su capacidad de sugerencia lo convierten en un buen ejemplo de poesía de naturaleza y recogimiento interior.</p>
+            </article>
+
+            <article class="comment-item">
+              <div class="comment-meta">
+                <span class="comment-tag">Unidad 6</span>
+                <span class="comment-tag">Song</span>
+              </div>
+              <h3>Su Shi · Penya-segat Roig</h3>
+              <p class="comment-text">«El Gran riu flueix cap a l’Orient...
+per aquestes muntanyes i rius hi visqueren incomptables herois...
+En el món dels homes la vida és com un somni.
+Oferisc el meu vi a la lluna del riu.»</p>
+              <ul>
+                <li>Comenta memoria histórica, paisaje grandioso y reflexión sobre la fugacidad.</li>
+                <li>Relaciona el yo con el pasado heroico y con la aceptación de la transitoriedad.</li>
+                <li>Útil para comparar con el modelo Han del <em>fu</em> y con la sensibilidad Song.</li>
+              </ul>
+              <p class="comment-example"><strong>Comentario de ejemplo:</strong> En Su Shi, el paisaje del Penya-segat Roig activa una meditación sobre la historia y la fugacidad de la vida. El recuerdo de héroes antiguos contrasta con la conciencia de que toda gloria humana es transitoria. Frente a esa evidencia, el texto propone una aceptación serena del paso del tiempo, rasgo muy característico de la sensibilidad Song.</p>
+            </article>
+
+            <article class="comment-item">
+              <div class="comment-meta">
+                <span class="comment-tag">Unidad 7</span>
+                <span class="comment-tag">Drama Yuan</span>
+              </div>
+              <h3>Dou E Wang 竇娥冤</h3>
+              <p class="comment-text">Base del texto: una joven vendida a una prestamista; retrato de una sociedad que oprime y maltrata a las mujeres; elementos fantásticos como fantasmas; reparación final.</p>
+              <ul>
+                <li>Si te cae comentario de teatro, centra género, conflicto, injusticia social y dimensión moral.</li>
+                <li>Comenta la crítica a la opresión femenina y el uso de lo fantástico.</li>
+                <li>Sirve como comentario temático aunque el material de clase ofrezca más resumen que fragmento literal.</li>
+              </ul>
+              <p class="comment-example"><strong>Comentario de ejemplo:</strong> <em>Dou E Wang</em> puede comentarse como drama Yuan de fuerte denuncia social. El núcleo temático es la injusticia sufrida por una mujer dentro de una sociedad opresiva, mientras que los elementos fantásticos amplifican el sentido moral de la reparación final. Así, el texto combina emoción dramática, crítica social y dimensión ejemplar.</p>
+            </article>
+
+            <article class="comment-item">
+              <div class="comment-meta">
+                <span class="comment-tag">Unidad 8</span>
+                <span class="comment-tag">Narrativa Ming-Qing</span>
+              </div>
+              <h3>Xi You Ji 西遊記 y Hong Lou Meng 紅樓夢</h3>
+              <p class="comment-text">Base del texto: en Xi You Ji aparecen Sun Wukong, Tang Sanzang, Zhu Bajie y Sha Wujing, con viaje iniciático y lectura alegórica; en Hong Lou Meng destacan el papel de las mujeres, la autorreflexión literaria y la alegoría espiritual.</p>
+              <ul>
+                <li>Para comentario narrativo largo: personajes, estructura del viaje, simbolismo y mezcla religiosa.</li>
+                <li>En Hong Lou Meng: vida aristocrática, reflexión literaria, afectos y lectura espiritual/social.</li>
+                <li>Úsalo como banco de temas y enfoque comparativo para comentario de narrativa premoderna.</li>
+              </ul>
+              <p class="comment-example"><strong>Comentario de ejemplo:</strong> En <em>Xi You Ji</em>, el viaje funciona como aventura, proceso espiritual y alegoría del perfeccionamiento interior, mientras que en <em>Hong Lou Meng</em> la atención se desplaza hacia la vida aristocrática, los afectos y la autorreflexión literaria. Ambos casos permiten comentar cómo la narrativa china premoderna combina entretenimiento, simbolismo y reflexión moral o espiritual.</p>
+            </article>
+          </div>
+        </article>
+      </section>
+
+      <section class="content-section" id="readings-section">
+        <article class="card reading-card reading-section">
+          <div class="commentary-header">
+            <h2>Fichas de lectura</h2>
+            <p>Respuestas orientativas a las fichas de lectura asociadas a las nuevas lecturas.</p>
+          </div>
+
+          <div class="reading-grid">
+            <article class="reading-item">
+              <h3>Unidad 2 · Ban Zhao · Nüjie / Instrucciones para mujeres</h3>
+              <div class="qa-block">
+                <p><strong>1. Tradición y contexto:</strong> La obra se inscribe claramente en la tradición confuciana. Defiende jerarquía, armonía familiar, culto a los antepasados y roles diferenciados entre hombres y mujeres. En el contexto Han sirve para consolidar un orden social patriarcal donde la familia es la base de la estabilidad moral y política.</p>
+                <p><strong>2. Tres ejemplos de conducta:</strong> ceder ante los demás y ponerse en último lugar; levantarse pronto y cumplir las tareas domésticas con orden; evitar el chismorreo y preparar con pureza las ofrendas a los antepasados.</p>
+                <p><strong>3. Roles de hombres y mujeres:</strong> a los hombres les atribuye autoridad, fuerza, control y educación libresca; a las mujeres, docilidad, trabajo doméstico, servicio al marido, modestia y continuidad del culto familiar.</p>
+                <p><strong>4. Conductas negativas y positivas:</strong> negativas son la arrogancia, la desobediencia, el desprecio al marido, el chisme, la risa frívola o la pereza. Positivas son humildad, diligencia, respeto, cautela, limpieza, obediencia y armonía.</p>
+                <p><strong>5. Relación con otras mujeres:</strong> no solo debe obedecer al marido, también mantener buena relación con suegra, cuñadas y demás mujeres de la familia del esposo. La armonía interna del hogar depende mucho de esa capacidad de respeto y conciliación.</p>
+              </div>
+            </article>
+
+            <article class="reading-item">
+              <h3>Unidad 4 · Cao Pi, Xi Kang y Balada de Mulan</h3>
+              <div class="qa-block">
+                <h4>Lunwen — Cao Pi</h4>
+                <p><strong>Valoración de los escritores del presente:</strong> Cao Pi cuestiona la tendencia a despreciar a los contemporáneos y a idealizar automáticamente a los antiguos. Su postura sugiere que los autores de su tiempo también merecen reconocimiento. Sí refleja debates posteriores: esta época fue vista a veces como refinada o decadente, pero también muy influyente por su innovación literaria y teórica.</p>
+              </div>
+              <div class="qa-block">
+                <h4>Discurs sobre la vida conreada — Xi Kang</h4>
+                <p><strong>1. Finalidad:</strong> defender una vida cultivada, retirada y fiel a la naturaleza propia. El texto ensalza serenidad, cuidado del espíritu, distancia respecto a ambición y corte, y un ideal de autonomía interior.</p>
+                <p><strong>2. Crítica y tradición:</strong> Xi Kang critica la búsqueda obsesiva de fama, cargos, riqueza, convencionalismo e hipocresía social. Se inserta sobre todo en una tradición daoísta y de <em>xuanxue</em>, con una clara preferencia por espontaneidad, desapego y vida apartada.</p>
+              </div>
+              <div class="qa-block">
+                <h4>Balada de Mulan</h4>
+                <p><strong>1. Contacto con otros pueblos:</strong> aparecen la guerra de frontera, referencias al <em>Khan</em>, el marco militar del norte y pueblos no Han como Xianbei o Rouran. Todo ello muestra una China en contacto con culturas fronterizas.</p>
+                <p><strong>2. Interpretación:</strong> la lectura más sólida es la de la piedad filial, porque Mulan sustituye al padre, asume el deber familiar y al final vuelve a casa sin buscar ascenso político. Aun así, el poema también deja ver una fuerte capacidad de acción femenina, así que ambas lecturas pueden convivir, aunque la base del texto parece más confuciana que individualista.</p>
+              </div>
+            </article>
+
+            <article class="reading-item">
+              <h3>Unidad 5 · Bai Juyi · La canción de la tristeza eterna y La balada de la intérprete de laúd</h3>
+              <div class="qa-block">
+                <p><strong>1. Nuevo yuefu:</strong> ambos poemas se relacionan con el nuevo yuefu por su lenguaje relativamente accesible, su dimensión narrativa y su atención a vidas concretas y sufrimiento humano. Se parecen al yuefu clásico por su vínculo con canción, personajes reconocibles y temas sociales; se diferencian por una elaboración literaria más consciente, mayor extensión y una autoría claramente culta.</p>
+                <p><strong>2. Etapas y escuelas:</strong> en Bai Juyi conviven impulsos confucianos, compasión budista y cierta sensibilidad de retiro. Hay crítica del dolor social, atención a la impermanencia y empatía hacia personajes desplazados o dañados. En la <em>Canción de la tristeza eterna</em> pesa más la reflexión sobre pasión, poder y pérdida; en la <em>Balada de la intérprete de laúd</em>, la compasión, el exilio y la identificación humana.</p>
+                <p><strong>3. ¿Solo realismo social?:</strong> puede leerse también como poeta elegíaco, narrativo y sentimental. Trata amor, pérdida, guerra, memoria, decadencia, música, separación y sufrimiento femenino. No solo denuncia, también construye escenas intensamente líricas y emocionales.</p>
+                <p><strong>4. Personajes y papel del poeta:</strong> en la <em>Canción</em> destacan emperador y Yang Guifei, figuras de élite; en la <em>Balada</em>, la intérprete de laúd y el propio poeta exiliado. El poeta actúa como testigo, mediador y voz que transforma experiencia individual en canto de alcance social, algo muy cercano a la lógica del yuefu.</p>
+                <p><strong>5. Imagen de las mujeres:</strong> Bai Juyi las representa con empatía, dignidad y dolor, no como culpables absolutas. En ambos textos aparecen condicionadas por estructuras de poder, guerra o abandono. La diferencia principal es social: una figura pertenece a la corte y la otra al mundo marginal del espectáculo, pero ambas encarnan pérdida y vulnerabilidad.</p>
+              </div>
+            </article>
+
+            <article class="reading-item">
+              <h3>Unidad 7 · La injusticia contra Dou E</h3>
+              <div class="qa-block">
+                <p><strong>1. Referencias históricas y legendarias:</strong> la obra usa alusiones morales, prodigios y recuerdos ejemplares de injusticias del pasado. Eso muestra que el drama Yuan mezcla cultura letrada, tradición popular y elementos sobrenaturales para reforzar su mensaje moral.</p>
+                <p><strong>2. Funcionariado y administración:</strong> la imagen es mayoritariamente negativa: corrupción, incompetencia, violencia y falta de justicia. El padre de Dou E resulta más ambiguo: no es cruel, pero su ausencia y su debilidad lo convierten en una figura insuficiente para protegerla.</p>
+                <p><strong>3. Personajes femeninos:</strong> Dou E queda retratada de manera muy positiva como víctima inocente, fiel y moralmente superior. El texto denuncia la vulnerabilidad de las mujeres dentro de una sociedad dura y mercantilizada.</p>
+                <p><strong>4. Pietat filial:</strong> sí, Dou E actúa de forma compatible con la piedad filial y con ideales confucianos de lealtad, sacrificio y rectitud. Protege a su entorno y soporta la injusticia con una dignidad que contrasta con la ruindad de muchos personajes masculinos.</p>
+                <p><strong>5. Sociedad mercantilizada:</strong> sí, la venta de Dou E por deudas convierte a la persona en mercancía. La obra critica un mundo donde dinero, abuso y poder destruyen vínculos humanos y degradan la justicia.</p>
+              </div>
+            </article>
+
+            <article class="reading-item">
+              <h3>Unidad 8 · El viaje a Occidente</h3>
+              <div class="qa-block">
+                <p><strong>1. Elementos religiosos y filosóficos:</strong> aparecen budismo, daoísmo, mitología popular, inmortales, demonios y burocracia celeste. La búsqueda de escrituras sagradas es claramente budista, mientras que inmortales, alquimia y ciertas figuras celestes remiten al daoísmo; la mezcla de corrientes es uno de los rasgos centrales de la novela.</p>
+                <p><strong>2. Retrato de las autoridades:</strong> tanto autoridades políticas como religiosas suelen aparecer como jerárquicas, burocráticas y a veces ineficaces o ridículas. El texto puede leerse como crítica de estructuras de poder que necesitan corrección externa.</p>
+                <p><strong>3. Elementos de narrativa oral:</strong> episodios encadenados, repeticiones, escenas de aventura, tono formular, personajes muy marcados, humor y sensación de relato contado para entretener. Todo eso acerca la obra a la tradición oral y al <em>huaben</em>.</p>
+                <p><strong>4. Destino de Sun Wukong:</strong> acaba sometido y encauzado hacia una vía de redención, más como castigo y domesticación que como aceptación libre plena. Desde dentro del relato funciona como corrección de su rebeldía; desde fuera, también responde a la necesidad de integrar al héroe rebelde en un marco moral y religioso aceptable.</p>
+                <p><strong>5. ¿Crítica al poder?:</strong> sí puede leerse así, porque Sun Wukong desafía la autoridad celestial y revela sus límites. Pero el texto no se queda solo en la rebelión: termina reabsorbiéndola dentro de una trayectoria espiritual. Por eso admite una lectura crítica y otra más moralizadora a la vez.</p>
+              </div>
+            </article>
           </div>
         </article>
       </section>
@@ -600,7 +1077,7 @@
           topic: 'Obras clave',
           era: 'Chu',
           question: '¿Qué obra de Qu Yuan o de su círculo consiste en preguntas lanzadas al cielo y a los dioses?',
-          options: ['Preguntas al cielo', 'Jujie', 'Shanglin', 'Daren'],
+          options: ['Preguntas al cielo', 'Nujie', 'Shanglin', 'Daren'],
           answer: 0,
           explanation: 'Los apuntes mencionan una serie de preguntas dirigidas al cielo en un poema extenso de 305 versos.',
           example: 'Preguntas al cielo',
@@ -679,12 +1156,12 @@
         {
           topic: 'Biografías',
           era: 'Han',
-          question: '¿Qué autora terminó el Hanshu y escribió además Jujie, unas instrucciones para las mujeres?',
+          question: '¿Qué autora terminó el Hanshu y escribió además Nujie, unas instrucciones para las mujeres?',
           options: ['Ban Zhao', 'Qu Yuan', 'Tao Yuanming', 'Liu Xie'],
           answer: 0,
           explanation: 'Ban Zhao es presentada como profesora de la corte y autora vinculada a obras historiográficas y normativas.',
-          example: 'Ban Zhao y Jujie',
-          key: 'Jujie funciona como manual de conducta femenina en clave confuciana.'
+          example: 'Ban Zhao y Nujie',
+          key: 'Nujie funciona como manual de conducta femenina en clave confuciana.'
         },
         {
           topic: 'Fu',
@@ -845,7 +1322,7 @@
           topic: 'Teoría literaria',
           era: 'Seis Dinastías',
           question: '¿Qué obra teórica está escrita en pianwen, tiene 50 capítulos y estudia orígenes, géneros y conceptos literarios?',
-          options: ['Wenxin Diaolong (El corazón de la literatura y el cincelado de los dragones)', 'Jujie', 'Soushenji', 'Lisao (La tristeza de la separación)'],
+          options: ['Wenxin Diaolong (El corazón de la literatura y el cincelado de los dragones)', 'Nujie', 'Soushenji', 'Lisao (La tristeza de la separación)'],
           answer: 0,
           explanation: 'Wenxin Diaolong es el gran tratado teórico mencionado en los apuntes.',
           example: 'Wenxin Diaolong (El corazón de la literatura y el cincelado de los dragones) de Liu Xie',
@@ -920,7 +1397,7 @@
           topic: 'Ficción',
           era: 'Dinastías del Sur',
           question: '¿Cuál de las siguientes colecciones está orientada al humor y a las historias de risa?',
-          options: ['Xiaolin', 'Shiji', 'Baopuzi', 'Jujie'],
+          options: ['Xiaolin', 'Shiji', 'Baopuzi', 'Nujie'],
           answer: 0,
           explanation: 'Xiaolin se traduce en los apuntes como un bosque para reírse y se asocia a chistes e historias cómicas.',
           example: 'Xiaolin (bosque para reírse)',
@@ -1379,11 +1856,11 @@
         {
           topic: 'Biografías',
           era: 'Han',
-          question: '¿Cómo se organiza Jujie, según los apuntes?',
+          question: '¿Cómo se organiza Nujie, según los apuntes?',
           options: ['Una introducción y siete capítulos', 'Cincuenta capítulos y un posfacio', 'Veinte capítulos de casos extraños', 'Ocho libros de medicina'],
           answer: 0,
-          explanation: 'Jujie se describe con una introducción y siete capítulos.',
-          example: 'Jujie',
+          explanation: 'Nujie se describe con una introducción y siete capítulos.',
+          example: 'Nujie',
           key: 'Es un manual de conducta para mujeres dentro del orden confuciano.'
         },
         {
@@ -1670,7 +2147,7 @@
           topic: 'Ficción',
           era: 'Tang',
           question: '¿Qué antecedente de la narrativa Tang se menciona como registro de lo extraordinario?',
-          options: ['Zhiguai', 'Guwen', 'Jujie', 'Lushi'],
+          options: ['Zhiguai', 'Guwen', 'Nujie', 'Lushi'],
           answer: 0,
           explanation: 'El zhiguai aparece como precedente directo de parte de la ficción Tang.',
           example: 'Zhiguai',
@@ -1740,7 +2217,7 @@
           topic: 'Ficción',
           era: 'Dinastías del Sur',
           question: '¿Qué obra se atribuye a Handan Chun?',
-          options: ['Xiaolin', 'Soushenji', 'Wenxin Diaolong (El corazón de la literatura y el cincelado de los dragones)', 'Jujie'],
+          options: ['Xiaolin', 'Soushenji', 'Wenxin Diaolong (El corazón de la literatura y el cincelado de los dragones)', 'Nujie'],
           answer: 0,
           explanation: 'Handan Chun es el autor citado de Xiaolin.',
           example: 'Xiaolin',
@@ -2010,7 +2487,7 @@
           topic: 'Estructuras',
           era: 'Han / fu',
           question: 'Si en un test te aparece un texto de 500 versos o más, muy descriptivo, hiperbólico y de vocabulario complejo, ¿qué debes identificar?',
-          options: ['Gran fu', 'Yuefu (Departamento de Música)', 'Guofeng', 'Jujie'],
+          options: ['Gran fu', 'Yuefu (Departamento de Música)', 'Guofeng', 'Nujie'],
           answer: 0,
           explanation: 'Los apuntes usan el nombre gran fu para piezas de 500 versos o más.',
           example: 'Gran fu',
@@ -2061,9 +2538,16 @@
         showFilters: false,
         questionSet: '40',
         examResponses: [],
-        examSelections: []
+        examSelections: [],
+        activeSection: 'test'
       };
 
+      const testSection = document.getElementById('test-section');
+      const commentsSection = document.getElementById('comments-section');
+      const readingsSection = document.getElementById('readings-section');
+      const showTestBtn = document.getElementById('show-test');
+      const showCommentsBtn = document.getElementById('show-comments');
+      const showReadingsBtn = document.getElementById('show-readings');
       const filtersWrap = document.getElementById('filters-wrap');
       const filtersNode = document.getElementById('filters');
       const questionTopic = document.getElementById('question-topic');
@@ -2142,6 +2626,15 @@
         modePill.textContent = `Modo: ${state.mode === 'practice' ? 'práctica' : 'examen'}`;
         scorePill.textContent = state.mode === 'exam' && state.currentIndex < state.filtered.length ? 'Aciertos: ocultos' : `Aciertos: ${state.score}`;
         prevBtn.classList.toggle('hidden', state.mode !== 'exam');
+      }
+
+      function renderActiveSection() {
+        testSection.classList.toggle('active', state.activeSection === 'test');
+        commentsSection.classList.toggle('active', state.activeSection === 'comments');
+        readingsSection.classList.toggle('active', state.activeSection === 'readings');
+        showTestBtn.classList.toggle('active', state.activeSection === 'test');
+        showCommentsBtn.classList.toggle('active', state.activeSection === 'comments');
+        showReadingsBtn.classList.toggle('active', state.activeSection === 'readings');
       }
 
       function renderQuestionSet() {
@@ -2353,6 +2846,11 @@
         applyFilter(state.activeFilter);
       }
 
+      function setActiveSection(section) {
+        state.activeSection = section;
+        renderActiveSection();
+      }
+
       function handleKeyboardShortcuts(event) {
         if (event.metaKey || event.ctrlKey || event.altKey) {
           return;
@@ -2447,12 +2945,16 @@
       examModeBtn.addEventListener('click', () => setMode('exam'));
       set40Btn.addEventListener('click', () => setQuestionSet('40'));
       setAllBtn.addEventListener('click', () => setQuestionSet('all'));
+      showTestBtn.addEventListener('click', () => setActiveSection('test'));
+      showCommentsBtn.addEventListener('click', () => setActiveSection('comments'));
+      showReadingsBtn.addEventListener('click', () => setActiveSection('readings'));
       toggleFiltersBtn.addEventListener('click', () => {
         state.showFilters = !state.showFilters;
         renderFilterVisibility();
       });
       window.addEventListener('keydown', handleKeyboardShortcuts);
 
+      renderActiveSection();
       renderFilters();
       renderFilterVisibility();
       renderMode();
