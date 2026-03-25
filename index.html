@@ -1,0 +1,2463 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Literatura china clásica · Test</title>
+    <style>
+      :root {
+        --bg: #0f172a;
+        --bg-soft: rgba(15, 23, 42, 0.72);
+        --panel: rgba(15, 23, 42, 0.88);
+        --panel-2: rgba(30, 41, 59, 0.88);
+        --text: #e2e8f0;
+        --muted: #94a3b8;
+        --accent: #38bdf8;
+        --accent-2: #a78bfa;
+        --ok: #22c55e;
+        --bad: #ef4444;
+        --warn: #f59e0b;
+        --border: rgba(148, 163, 184, 0.18);
+        --shadow: 0 30px 60px rgba(2, 6, 23, 0.45);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 30%),
+          radial-gradient(circle at top right, rgba(167, 139, 250, 0.16), transparent 32%),
+          linear-gradient(180deg, #020617 0%, #0f172a 48%, #111827 100%);
+      }
+
+      .page {
+        width: min(920px, calc(100% - 24px));
+        margin: 0 auto;
+        padding: 24px 0 32px;
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(14px);
+      }
+
+      .quiz-card,
+      .sheet {
+        padding: 28px;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      .mini span,
+      .meta,
+      .helper,
+      .sheet li,
+      .feedback p,
+      .source {
+        color: var(--muted);
+      }
+
+      .quiz-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 18px;
+      }
+
+      .pill-row,
+      .filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .pill,
+      .filter,
+      .btn {
+        border: 1px solid transparent;
+        border-radius: 999px;
+        transition: 0.2s ease;
+      }
+
+      .pill {
+        padding: 8px 12px;
+        background: rgba(148, 163, 184, 0.1);
+        color: #cbd5e1;
+        font-size: 0.9rem;
+      }
+
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+
+      .mode-switch {
+        display: inline-flex;
+        gap: 8px;
+        padding: 6px;
+        border-radius: 999px;
+        background: rgba(15, 23, 42, 0.72);
+        border: 1px solid rgba(148, 163, 184, 0.14);
+      }
+
+      .control-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .mode-btn,
+      .set-btn,
+      .toggle-btn {
+        border: 1px solid transparent;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--text);
+        padding: 10px 14px;
+        cursor: pointer;
+        font-weight: 700;
+        transition: 0.2s ease;
+      }
+
+      .mode-btn.active,
+      .set-btn.active,
+      .toggle-btn.active {
+        background: rgba(56, 189, 248, 0.18);
+        border-color: rgba(56, 189, 248, 0.42);
+        color: #e0f2fe;
+      }
+
+      .toggle-btn {
+        background: rgba(15, 23, 42, 0.72);
+        border-color: rgba(148, 163, 184, 0.14);
+      }
+
+      .set-btn {
+        background: rgba(15, 23, 42, 0.72);
+        border-color: rgba(148, 163, 184, 0.14);
+      }
+
+      .filters-wrap {
+        display: none;
+        margin-bottom: 18px;
+      }
+
+      .filters-wrap.visible {
+        display: block;
+      }
+
+      .filter {
+        padding: 10px 14px;
+        background: rgba(15, 23, 42, 0.7);
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .filter:hover,
+      .btn:hover,
+      .answer:hover {
+        transform: translateY(-1px);
+      }
+
+      .filter.active {
+        border-color: rgba(56, 189, 248, 0.42);
+        background: rgba(56, 189, 248, 0.18);
+        color: #e0f2fe;
+      }
+
+      .question-box {
+        padding: 24px;
+        border-radius: 22px;
+        background: linear-gradient(180deg, rgba(15, 23, 42, 0.84), rgba(30, 41, 59, 0.82));
+        border: 1px solid rgba(148, 163, 184, 0.14);
+      }
+
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 14px;
+        font-size: 0.93rem;
+      }
+
+      .question {
+        font-size: clamp(1.2rem, 2vw, 1.6rem);
+        line-height: 1.45;
+        margin-bottom: 20px;
+      }
+
+      .answers {
+        display: grid;
+        gap: 12px;
+      }
+
+      .answer {
+        width: 100%;
+        text-align: left;
+        padding: 16px 18px;
+        border-radius: 18px;
+        border: 1px solid rgba(148, 163, 184, 0.14);
+        background: rgba(15, 23, 42, 0.72);
+        color: var(--text);
+        cursor: pointer;
+        font-size: 0.98rem;
+      }
+
+      .answer.selected {
+        border-color: rgba(56, 189, 248, 0.42);
+        background: rgba(56, 189, 248, 0.12);
+      }
+
+      .answer.correct {
+        border-color: rgba(34, 197, 94, 0.55);
+        background: rgba(34, 197, 94, 0.14);
+      }
+
+      .answer.wrong {
+        border-color: rgba(239, 68, 68, 0.55);
+        background: rgba(239, 68, 68, 0.14);
+      }
+
+      .answer.dimmed {
+        opacity: 0.7;
+      }
+
+      .feedback {
+        display: none;
+        margin-top: 18px;
+        padding: 18px;
+        border-radius: 18px;
+        border: 1px solid rgba(148, 163, 184, 0.14);
+        background: rgba(2, 6, 23, 0.4);
+      }
+
+      .feedback.visible {
+        display: block;
+      }
+
+      .feedback h3 {
+        margin-bottom: 10px;
+      }
+
+      .facts {
+        display: grid;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .fact {
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: rgba(15, 23, 42, 0.56);
+      }
+
+      .fact strong {
+        color: #f8fafc;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 22px;
+      }
+
+      .nav-btn.hidden {
+        display: none;
+      }
+
+      .btn {
+        padding: 12px 18px;
+        cursor: pointer;
+        font-weight: 700;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        color: #020617;
+      }
+
+      .btn-secondary {
+        background: rgba(15, 23, 42, 0.72);
+        color: var(--text);
+        border-color: rgba(148, 163, 184, 0.16);
+      }
+
+      .progress {
+        margin-top: 18px;
+      }
+
+      .bar {
+        height: 10px;
+        border-radius: 999px;
+        background: rgba(148, 163, 184, 0.15);
+        overflow: hidden;
+      }
+
+      .bar > span {
+        display: block;
+        height: 100%;
+        width: 0;
+        border-radius: inherit;
+        background: linear-gradient(90deg, var(--accent), var(--accent-2));
+        transition: width 0.25s ease;
+      }
+
+      .result-box {
+        display: none;
+        margin-top: 20px;
+        padding: 22px;
+        border-radius: 20px;
+        background: rgba(30, 41, 59, 0.72);
+        border: 1px solid rgba(148, 163, 184, 0.14);
+      }
+
+      .result-box.visible {
+        display: block;
+      }
+
+      .review-list {
+        display: grid;
+        gap: 14px;
+        margin-top: 18px;
+      }
+
+      .review-item {
+        padding: 16px;
+        border-radius: 18px;
+        border: 1px solid rgba(148, 163, 184, 0.14);
+        background: rgba(15, 23, 42, 0.56);
+      }
+
+      .review-item.ok {
+        border-color: rgba(34, 197, 94, 0.35);
+      }
+
+      .review-item.bad {
+        border-color: rgba(239, 68, 68, 0.35);
+      }
+
+      .review-item h4 {
+        margin: 0 0 10px;
+        font-size: 1rem;
+        line-height: 1.45;
+      }
+
+      .review-item p {
+        margin: 6px 0;
+        line-height: 1.55;
+      }
+
+      .review-label {
+        color: #f8fafc;
+        font-weight: 700;
+      }
+
+      @media (max-width: 680px) {
+        .page {
+          width: min(100% - 20px, 1180px);
+          padding-top: 20px;
+        }
+
+        .quiz-card,
+        .sheet {
+          padding: 22px;
+        }
+
+        .quiz-top {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .toolbar {
+          flex-direction: column;
+          align-items: stretch;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section>
+        <article class="card quiz-card">
+          <div class="toolbar">
+            <div class="control-group">
+              <div class="mode-switch" id="mode-switch">
+                <button class="mode-btn active" id="practice-mode" type="button">Práctica</button>
+                <button class="mode-btn" id="exam-mode" type="button">Examen</button>
+              </div>
+              <div class="mode-switch">
+                <button class="set-btn active" id="set-40" type="button">40 aleatorias</button>
+                <button class="set-btn" id="set-all" type="button">Todas</button>
+              </div>
+            </div>
+            <button class="toggle-btn" id="toggle-filters" type="button">Mostrar temas</button>
+          </div>
+
+          <div class="quiz-top">
+            <div class="pill-row">
+              <span class="pill" id="score-pill">Aciertos: 0</span>
+              <span class="pill" id="progress-pill">Pregunta 0/0</span>
+              <span class="pill" id="mode-pill">Modo: práctica</span>
+              <span class="pill" id="set-pill">Bloque: 40</span>
+            </div>
+          </div>
+
+          <div class="filters-wrap" id="filters-wrap">
+            <div class="filters" id="filters"></div>
+          </div>
+
+          <div class="question-box">
+            <div class="meta">
+              <span id="question-topic">Tema</span>
+              <span id="question-era">Aparición</span>
+            </div>
+            <div class="question" id="question-text">Cargando preguntas…</div>
+            <div class="answers" id="answers"></div>
+            <div class="feedback" id="feedback">
+              <h3 id="feedback-title"></h3>
+              <p id="feedback-text"></p>
+              <div class="facts">
+                <div class="fact"><strong>Texto/ejemplo:</strong> <span id="fact-example"></span></div>
+                <div class="fact"><strong>Clave literaria:</strong> <span id="fact-key"></span></div>
+              </div>
+            </div>
+            <div class="actions">
+              <button class="btn btn-secondary nav-btn hidden" id="prev-btn" type="button">Atrás</button>
+              <button class="btn btn-primary" id="next-btn" disabled>Siguiente</button>
+              <button class="btn btn-secondary" id="restart-btn">Reiniciar y mezclar</button>
+            </div>
+            <div class="progress">
+              <div class="bar"><span id="progress-bar"></span></div>
+            </div>
+            <div class="result-box" id="result-box"></div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <script>
+      const questions = [
+        {
+          topic: 'Clásicos',
+          era: 'Zhou / clásicos chinos',
+          question: '¿Qué obra se presenta en los apuntes como uno de los primeros textos en prosa y como una acumulación de documentos independientes?',
+          options: ['Shijing (Clásico de la poesía)', 'Shujing (Clásico de los documentos)', 'Yijing (Clásico de los cambios)', 'Jiuge (Nueve cantos)'],
+          answer: 1,
+          explanation: 'El Shujing aparece como uno de los primeros textos en prosa y reúne materiales diversos organizados en capítulos.',
+          example: 'Shujing (Clásico de los documentos)',
+          key: 'Prosa temprana, discursos, biografías de sabios, repeticiones y frases de cuatro caracteres.'
+        },
+        {
+          topic: 'Clásicos',
+          era: 'Zhou / clásicos chinos',
+          question: '¿Cuál de los cinco clásicos es descrito en los apuntes como el más importante e influyente y además estaba pensado para cantarse?',
+          options: ['Shijing (Clásico de la poesía)', 'Lijing (Libro de los rituales)', 'Yijing (Clásico de los cambios)', 'Shujing (Clásico de los documentos)'],
+          answer: 0,
+          explanation: 'Los apuntes señalan que el Shijing es el más importante e influyente entre los clásicos mencionados.',
+          example: 'Shijing (Clásico de la poesía)',
+          key: '305 poemas, versos de cuatro caracteres, paralelismos y fórmulas de rima variadas.'
+        },
+        {
+          topic: 'Clásicos',
+          era: 'Zhou / clásicos chinos',
+          question: 'Dentro del Shijing (Clásico de la poesía), ¿qué grupo corresponde a canciones populares de los campesinos y lenguaje sencillo?',
+          options: ['Song (himnos)', 'Ya (odas)', 'Feng o guofeng (aires del reino o de los principados)', 'Shu (libros)'],
+          answer: 2,
+          explanation: 'Los aires del reino o de los principados se presentan como canciones populares de gran riqueza temática.',
+          example: 'Feng / Guofeng (aires del reino o de los principados)',
+          key: '160 piezas con lenguaje sencillo y temática amplia.'
+        },
+        {
+          topic: 'Clásicos',
+          era: 'Zhou / clásicos chinos',
+          question: '¿Qué parte del Shijing (Clásico de la poesía) estaba vinculada a rituales solemnes de la corte?',
+          options: ['Song (himnos)', 'Ya menores', 'Guofeng', 'Jueju'],
+          answer: 0,
+          explanation: 'Los song son himnos solemnes destinados a rituales de la corte.',
+          example: 'Song (himnos)',
+          key: 'Se organizan en himnos de Zhou, Lu y Shang.'
+        },
+        {
+          topic: 'Clásicos',
+          era: 'Primaveras y Otoños',
+          question: '¿Qué texto se considera la base de la prosa posterior por su lenguaje compacto, preciso y de frases cortas?',
+          options: ['Chunqiu (Anales de primaveras y otoños)', 'Liji', 'Hanshu', 'Baopuzi'],
+          answer: 0,
+          explanation: 'Los apuntes señalan a los Anales de primaveras y otoños como modelo de prosa para la posteridad.',
+          example: 'Chunqiu (Anales de primaveras y otoños)',
+          key: 'Concisión extrema, registro de hechos y enorme relevancia de sus comentarios.'
+        },
+        {
+          topic: 'Clásicos',
+          era: 'Zhou / siglos IV-I a. C.',
+          question: '¿Qué clásico se describe más como manual de etiqueta ritual y corrección que como obra literaria en sentido estricto?',
+          options: ['Lijing (Libro de los rituales)', 'Shijing (Clásico de la poesía)', 'Chuci (Cantos de Chu)', 'Hanshu'],
+          answer: 0,
+          explanation: 'El Libro de los rituales aparece ligado a jerarquía, armonía social y orden confuciano.',
+          example: 'Lijing (Libro de los rituales)',
+          key: 'Incluye Zhouli, Yili y Liji; destacan Daxue y Zhongyong.'
+        },
+        {
+          topic: 'Clásicos',
+          era: 'Siglo XI a. C.',
+          question: '¿Qué obra aparece definida como libro de adivinación con lenguaje arcaico y 64 hexagramas?',
+          options: ['Yijing (Clásico de los cambios)', 'Shujing', 'Wenxin Diaolong', 'Soushenji'],
+          answer: 0,
+          explanation: 'El Yijing se caracteriza por sus hexagramas y su naturaleza adivinatoria.',
+          example: 'Yijing (Clásico de los cambios)',
+          key: 'Se articula también mediante 8 trigramas bagua.'
+        },
+        {
+          topic: 'Comentarios',
+          era: 'Tradición exegética del Chunqiu',
+          question: '¿Qué comentario del Chunqiu (Anales de primaveras y otoños) destaca por sus innovaciones narrativas y por añadir elementos para expresar un punto de vista?',
+          options: ['Zuo', 'Gongyang', 'Guliang', 'Liji'],
+          answer: 1,
+          explanation: 'El comentario Gongyang se caracteriza por intervenir más en la narración y por usar un lenguaje elaborado.',
+          example: 'Comentario Gongyang al Chunqiu',
+          key: 'Reescribe y amplía el fragmento para orientar su interpretación.'
+        },
+        {
+          topic: 'Comentarios',
+          era: 'Tradición exegética del Chunqiu',
+          question: 'Según los apuntes, ¿qué comentario del Chunqiu se atribuye a una sola persona que busca dejar por escrito conocimientos recibidos de Confucio?',
+          options: ['Zuo', 'Gongyang', 'Guliang', 'Shu'],
+          answer: 0,
+          explanation: 'El comentario Zuo aparece ligado a la idea de fijar por escrito una tradición recibida.',
+          example: 'Comentario Zuo',
+          key: 'Es importante para contextualizar y ampliar la crónica breve.'
+        },
+        {
+          topic: 'Poesía de Chu',
+          era: 'Chu, siglos IV-III a. C.',
+          question: '¿Cuál de estas opciones describe mejor a los Chuci (Cantos de Chu) según los apuntes?',
+          options: [
+            'Poesía campesina de lenguaje llano y estrofas fijas de cuatro caracteres',
+            'Antología de poemas imaginativos con figuras mitológicas, lenguaje refinado y uso de la partícula xi',
+            'Colección de biografías femeninas ejemplares con finalidad moral',
+            'Ensayos budistas en pianwen de frases breves'
+          ],
+          answer: 1,
+          explanation: 'Los Chuci aparecen ligados al reino de Chu y destacan por imaginación, mito, refinamiento y estructuras versales variadas.',
+          example: 'Chuci (Cantos de Chu)',
+          key: 'Versos de 4, 5 o 7 caracteres, tono chamánico y fuerte elaboración lírica.'
+        },
+        {
+          topic: 'Poesía de Chu',
+          era: 'Chu, siglos IV-III a. C.',
+          question: '¿Qué rasgo formal se asocia específicamente a la poesía del reino de Chu en los apuntes?',
+          options: [
+            'Uso exclusivo de estrofas AA0A',
+            'Versos de 4, 5 o 7 caracteres y presencia de la partícula xi',
+            'Solo pareados en pianwen',
+            'Ausencia total de figuras mitológicas'
+          ],
+          answer: 1,
+          explanation: 'La forma de Chu se describe con mayor flexibilidad métrica y con la partícula xi como marca reconocible.',
+          example: 'Chuci (Cantos de Chu)',
+          key: 'Rasgo diferencial frente a la mayor rigidez del Shijing.'
+        },
+        {
+          topic: 'Poesía de Chu',
+          era: 'Chu',
+          question: '¿Qué autor es presentado como la primera gran figura con nombre propio de la poesía china?',
+          options: ['Qu Yuan', 'Sima Qian', 'Ban Zhao', 'Han Yu'],
+          answer: 0,
+          explanation: 'Qu Yuan aparece como la primera gran personalidad poética de renombre de la tradición china.',
+          example: 'Qu Yuan',
+          key: 'Se vincula a Lisao, Jiuzhang y Preguntas al cielo.'
+        },
+        {
+          topic: 'Obras clave',
+          era: 'Chu',
+          question: '¿Qué obra se define como una elegía sobre el exilio, con yo poético marcado y lenguaje refinado?',
+          options: ['Lisao (La tristeza de la separación)', 'Daxue', 'Zijiwen', 'Xiaolin'],
+          answer: 0,
+          explanation: 'Lisao es una de las obras centrales del corpus de Chu y en los apuntes se asocia al exilio, al viaje y a la voz del yo.',
+          example: 'Lisao (La tristeza de la separación), atribuida a Qu Yuan',
+          key: 'Elegía extensa, naturaleza como refugio y aparición destacada de la subjetividad poética.'
+        },
+        {
+          topic: 'Obras clave',
+          era: 'Chu',
+          question: '¿Qué obra de Qu Yuan o de su círculo consiste en preguntas lanzadas al cielo y a los dioses?',
+          options: ['Preguntas al cielo', 'Jujie', 'Shanglin', 'Daren'],
+          answer: 0,
+          explanation: 'Los apuntes mencionan una serie de preguntas dirigidas al cielo en un poema extenso de 305 versos.',
+          example: 'Preguntas al cielo',
+          key: 'Refuerza el componente cosmológico y reflexivo de la poesía de Chu.'
+        },
+        {
+          topic: 'Historiografía',
+          era: 'Han',
+          question: '¿Qué autor es presentado como el padre de la historiografía china y creador del Shiji?',
+          options: ['Ban Gu', 'Sima Xiangru', 'Sima Qian', 'Liu Xie'],
+          answer: 2,
+          explanation: 'Sima Qian es la gran figura historiográfica de los Han y el responsable del Shiji.',
+          example: 'Shiji de Sima Qian',
+          key: 'Combina fuentes previas, orden cronológico y comentarios personales desde una óptica confuciana.'
+        },
+        {
+          topic: 'Historiografía',
+          era: 'Han',
+          question: '¿Cuántas partes principales señalan los apuntes en la estructura del Shiji?',
+          options: ['Tres', 'Cuatro', 'Cinco', 'Siete'],
+          answer: 2,
+          explanation: 'El Shiji se organiza en cinco grandes secciones.',
+          example: 'Benji, biao, shu, shijia y liezhuan',
+          key: 'Esa división articula crónica, tablas, tratados, genealogías y biografías.'
+        },
+        {
+          topic: 'Historiografía',
+          era: 'Han',
+          question: 'Dentro del Shiji, ¿qué parte reúne biografías ejemplares de personajes concretos?',
+          options: ['Benji', 'Biao', 'Shu', 'Liezhuan'],
+          answer: 3,
+          explanation: 'Las liezhuan son las biografías ejemplares y recogen retratos de figuras concretas, como Qu Yuan.',
+          example: 'Liezhuan del Shiji',
+          key: 'La biografía funciona como forma narrativa y moral a la vez.'
+        },
+        {
+          topic: 'Historiografía',
+          era: 'Han',
+          question: 'En la estructura del Shiji, ¿qué son los biao?',
+          options: [
+            'Poemas de corte en verso',
+            'Mesas ordenadas cronológica y geográficamente con eventos y personajes principales',
+            'Capítulos exclusivamente filosóficos sobre daoísmo',
+            'Relatos de espíritus y animales extraños'
+          ],
+          answer: 1,
+          explanation: 'Los biao funcionan como tablas o mesas que ordenan la información histórica.',
+          example: 'Biao del Shiji',
+          key: 'Relacionan acontecimientos y figuras en secuencias temporales y espaciales.'
+        },
+        {
+          topic: 'Historiografía',
+          era: 'Han',
+          question: '¿Qué rasgo diferencia al Hanshu frente al Shiji en los apuntes?',
+          options: [
+            'Usa solo verso y abandona la prosa',
+            'Aporta más datos y explicaciones, y resulta más fiable',
+            'Rechaza toda perspectiva historiográfica',
+            'Elimina por completo las biografías'
+          ],
+          answer: 1,
+          explanation: 'El Hanshu bebe del Shiji, pero se describe como más detallado, más explicativo y más fiable.',
+          example: 'Hanshu de la familia Ban',
+          key: 'Incluye además una monografía sobre literatura.'
+        },
+        {
+          topic: 'Biografías',
+          era: 'Han',
+          question: '¿Qué colección se vincula a la tradición de las mujeres ejemplares y a una finalidad instructiva moral y política?',
+          options: ['Lienü Zhuan', 'Yuefu (Departamento de Música)', 'Soushenji', 'Taohua Yuanji'],
+          answer: 0,
+          explanation: 'Lienü Zhuan reúne biografías femeninas ejemplares con función didáctica y normativa.',
+          example: 'Lienü Zhuan comentado por Ban Zhao',
+          key: 'Integra modelos de conducta femeninos en la tradición historiográfica.'
+        },
+        {
+          topic: 'Biografías',
+          era: 'Han',
+          question: '¿Qué autora terminó el Hanshu y escribió además Jujie, unas instrucciones para las mujeres?',
+          options: ['Ban Zhao', 'Qu Yuan', 'Tao Yuanming', 'Liu Xie'],
+          answer: 0,
+          explanation: 'Ban Zhao es presentada como profesora de la corte y autora vinculada a obras historiográficas y normativas.',
+          example: 'Ban Zhao y Jujie',
+          key: 'Jujie funciona como manual de conducta femenina en clave confuciana.'
+        },
+        {
+          topic: 'Fu',
+          era: 'Han',
+          question: '¿Cómo se define el fu en los apuntes?',
+          options: [
+            'Como balada popular sin métrica fija',
+            'Como exposición poética culta, ambigua entre lo lírico y lo narrativo',
+            'Como comentario canónico al Chunqiu',
+            'Como prosa religiosa de lenguaje sencillo'
+          ],
+          answer: 1,
+          explanation: 'El fu se presenta como una forma cortesana, docta e imaginativa, difícil de encajar solo en lo lírico o en lo narrativo.',
+          example: 'Fu de Sima Xiangru',
+          key: 'Usa hipérboles, enumeraciones, vocabulario complejo y a veces mezcla prosa y verso.'
+        },
+        {
+          topic: 'Fu',
+          era: 'Han',
+          question: '¿Qué nombre recibe el subgénero de fu de 500 versos o más?',
+          options: ['Jueju', 'Gran fu', 'Bianwen', 'Song (himnos)'],
+          answer: 1,
+          explanation: 'Los apuntes mencionan expresamente el gran fu para piezas muy extensas.',
+          example: 'Gran fu',
+          key: 'Longitud elevada, despliegue descriptivo y voluntad de exhibición literaria.'
+        },
+        {
+          topic: 'Fu',
+          era: 'Han',
+          question: '¿Qué autor aparece como la gran referencia del fu han, aunque se diga que solo se conservan con seguridad cinco composiciones suyas?',
+          options: ['Sima Xiangru', 'Ge Hong', 'Gan Bao', 'Cao Pi'],
+          answer: 0,
+          explanation: 'Sima Xiangru es el nombre destacado del género fu en los apuntes.',
+          example: 'Sima Xiangru',
+          key: 'Se citan Zixu, Shanglin, Changmen, Meiren y Daren.'
+        },
+        {
+          topic: 'Fu',
+          era: 'Han',
+          question: '¿Qué rasgo NO corresponde al fu según los apuntes?',
+          options: [
+            'Hipérboles y vocabulario complejo',
+            'Enumeraciones y rimas irregulares',
+            'Lenguaje siempre sencillo y directo como rasgo central',
+            'Posible presencia de introducciones en prosa'
+          ],
+          answer: 2,
+          explanation: 'El lenguaje sencillo y directo se asocia más al yuefu que al fu.',
+          example: 'Fu han',
+          key: 'El fu busca brillo verbal, erudición y despliegue descriptivo.'
+        },
+        {
+          topic: 'Yuefu',
+          era: 'Han',
+          question: '¿Qué rasgo corresponde al yuefu?',
+          options: [
+            'Tiene rima fija y solo trata asuntos rituales de la corte',
+            'Es un género popular, de lenguaje sencillo, sin métrica ni rima estables',
+            'Es un tratado teórico sobre composición literaria',
+            'Se limita a biografías de funcionarios'
+          ],
+          answer: 1,
+          explanation: 'El yuefu aparece como un género cercano al pueblo y a la canción, con gran variedad temática.',
+          example: 'Yuefu (Departamento de Música)',
+          key: 'Se asocia a la recopilación musical imperial y a voces de distintos orígenes sociales.'
+        },
+        {
+          topic: 'Yuefu',
+          era: 'Han',
+          question: '¿Qué significa yuefu según los apuntes?',
+          options: ['Libro de los cantos', 'Departamento de Música', 'Relatos extraordinarios', 'Conversaciones pequeñas'],
+          answer: 1,
+          explanation: 'Los apuntes traducen yuefu como Departamento de Música.',
+          example: 'Yuefu (Departamento de Música)',
+          key: 'Remite a la oficina imperial encargada de la recopilación musical.'
+        },
+        {
+          topic: 'Yuefu',
+          era: 'Han',
+          question: '¿Qué variedad temática se atribuye al yuefu?',
+          options: [
+            'Solo poemas filosóficos confucianos',
+            'Guerra, amor, viajes y otras materias diversas',
+            'Únicamente comentarios al Chunqiu',
+            'Solo relatos sobre monjes budistas'
+          ],
+          answer: 1,
+          explanation: 'El yuefu se define por su amplitud temática y por su cercanía a canciones y baladas.',
+          example: 'Canciones y baladas yuefu',
+          key: 'Suelen ser anónimas y conservadas en antologías posteriores.'
+        },
+        {
+          topic: 'Prosa budista',
+          era: 'Finales de Han / primeras traducciones',
+          question: '¿Qué rasgo formal se atribuye a la prosa budista temprana en China?',
+          options: [
+            'Versos de siete sílabas con tono heroico',
+            'Frases breves de cuatro caracteres y escritura en parejas o pianwen',
+            'Solo hexagramas y fórmulas adivinatorias',
+            'Ausencia total de parábolas'
+          ],
+          answer: 1,
+          explanation: 'La prosa budista se caracteriza por claridad, brevedad y fácil memorización, a menudo en parejas paralelas.',
+          example: 'Traducciones ligadas a Kumarajiva',
+          key: 'Introduce anécdotas del Buda y parábolas con lenguaje accesible.'
+        },
+        {
+          topic: 'Prosa budista',
+          era: 'Finales de Han / primeras traducciones',
+          question: '¿Qué nombre propio aparece en los apuntes como uno de los primeros monjes budistas importantes por sus traducciones?',
+          options: ['Kumarajiva', 'Han Yu', 'Sima Tan', 'Ban Gu'],
+          answer: 0,
+          explanation: 'Kumarajiva se destaca por sus traducciones de textos budistas de la India.',
+          example: 'Kumarajiva',
+          key: 'Su labor ayuda a consolidar una prosa más sencilla y recordable.'
+        },
+        {
+          topic: 'Ensayo',
+          era: 'Entre Han y Tang',
+          question: '¿Qué obra de Ge Hong combina budismo y daoísmo y se divide en capítulos externos e internos?',
+          options: ['Baopuzi', 'Wenxin Diaolong (El corazón de la literatura y el cincelado de los dragones)', 'Shanglin', 'Hanshu'],
+          answer: 0,
+          explanation: 'Baopuzi se describe como un libro de ensayos con una mezcla doctrinal y una prosa rica pero árida.',
+          example: 'Baopuzi',
+          key: 'Capítulos externos sobre sociedad, política y cultura; internos sobre esoterismo.'
+        },
+        {
+          topic: 'Ensayo',
+          era: 'Seis Dinastías',
+          question: '¿Qué nuevo género de ensayo aparece ligado a discusiones de temática taoísta y budista entre autores retirados?',
+          options: ['Conversación pura', 'Benji', 'Shu', 'Lushi'],
+          answer: 0,
+          explanation: 'Los apuntes mencionan la conversación pura como nuevo género ensayístico de debate filosófico.',
+          example: 'Conversación pura',
+          key: 'Se relaciona con los Siete Sabios del Bosque del Bambú.'
+        },
+        {
+          topic: 'Ensayo y poesía',
+          era: 'Seis Dinastías',
+          question: '¿Qué autor se asocia a vida retirada, campo, taoísmo y al ensayo Taohua Yuanji?',
+          options: ['Tao Yuanming', 'Han Yu', 'Ban Zhao', 'Gan Bao'],
+          answer: 0,
+          explanation: 'Tao Yuanming es una figura clave del giro hacia la interioridad, la retirada y el paisaje.',
+          example: 'Taohua Yuanji (Recuerdos de la fuente de los melocotones)',
+          key: 'Ensayo y poesía que convierten el campo en espacio literario y existencial.'
+        },
+        {
+          topic: 'Ensayo y poesía',
+          era: 'Seis Dinastías',
+          question: '¿Qué serie poética de Tao Yuanming se menciona expresamente en los apuntes?',
+          options: ['Yinjiu (Bebiendo vino)', 'Song', 'Jueju', 'Biao'],
+          answer: 0,
+          explanation: 'Yinjiu aparece como una de las series poéticas destacadas de Tao Yuanming.',
+          example: 'Yinjiu (Bebiendo vino)',
+          key: 'Vincula retiro, experiencia vital y una voz lírica personal.'
+        },
+        {
+          topic: 'Teoría literaria',
+          era: 'Seis Dinastías',
+          question: '¿Qué obra teórica está escrita en pianwen, tiene 50 capítulos y estudia orígenes, géneros y conceptos literarios?',
+          options: ['Wenxin Diaolong (El corazón de la literatura y el cincelado de los dragones)', 'Jujie', 'Soushenji', 'Lisao (La tristeza de la separación)'],
+          answer: 0,
+          explanation: 'Wenxin Diaolong es el gran tratado teórico mencionado en los apuntes.',
+          example: 'Wenxin Diaolong (El corazón de la literatura y el cincelado de los dragones) de Liu Xie',
+          key: 'Sistematiza clásicos, géneros, crítica y principios de composición.'
+        },
+        {
+          topic: 'Teoría literaria',
+          era: 'Seis Dinastías',
+          question: '¿Qué texto de Cao Pi se menciona como capítulo sobre la literatura dentro de una obra más amplia?',
+          options: ['Lunwen (Sobre la literatura)', 'Baopuzi', 'Shiji', 'Xiaolin'],
+          answer: 0,
+          explanation: 'Lunwen aparece citado como reflexión teórica incluida en el Dianlun.',
+          example: 'Lunwen (Sobre la literatura)',
+          key: 'Muestra el creciente interés por la composición y la crítica literaria.'
+        },
+        {
+          topic: 'Teoría literaria',
+          era: 'Seis Dinastías',
+          question: '¿Qué obra de Lu Ji se cita en los apuntes por su atención a los tonos como elemento de musicalidad?',
+          options: ['Fu sobre poesía', 'Hanshu', 'Zijiwen', 'Guofeng'],
+          answer: 0,
+          explanation: 'El Fu sobre poesía se menciona en relación con la musicalidad y la importancia emergente de los tonos.',
+          example: 'Fu sobre poesía de Lu Ji',
+          key: 'Se inserta en el auge de la reflexión estética sobre la escritura.'
+        },
+        {
+          topic: 'Ficción',
+          era: 'Dinastías del Sur',
+          question: '¿Cómo se caracteriza el xiaoshuo en los apuntes?',
+          options: [
+            'Como el género más prestigioso de la corte clásica',
+            'Como un género menor vinculado a anécdotas, casos extraños y biografías ficcionalizadas',
+            'Como una forma exclusiva de poesía musical',
+            'Como un comentario ritual al Liji'
+          ],
+          answer: 1,
+          explanation: 'El xiaoshuo aparece como un género de escaso prestigio, pero fundamental para el desarrollo posterior de la ficción.',
+          example: 'Xiaoshuo (conversaciones pequeñas) de las dinastías del Sur',
+          key: 'Incluye anécdotas, humor, ficción biográfica y colecciones de lo extraño.'
+        },
+        {
+          topic: 'Ficción',
+          era: 'Dinastías del Sur',
+          question: '¿A qué hace referencia tradicionalmente el nombre xiaoshuo según los apuntes?',
+          options: ['A los xiao ren, hombres poco virtuosos', 'A los sabios confucianos', 'A la corte imperial', 'A un tipo de himno ritual'],
+          answer: 0,
+          explanation: 'Los apuntes indican que el nombre del género remite a los xiao ren, es decir, a hombres poco virtuosos.',
+          example: 'Xiaoshuo (小説)',
+          key: 'Eso explica el escaso prestigio que tuvo durante mucho tiempo.'
+        },
+        {
+          topic: 'Ficción',
+          era: 'Dinastías del Sur',
+          question: '¿Qué colección reúne relatos sobre espíritus y lo extraordinario, con 464 historias en 20 capítulos?',
+          options: ['Shishuo Xinyu', 'Soushenji', 'Xiaolin', 'Lunwen'],
+          answer: 1,
+          explanation: 'Soushenji es la colección asociada a registros de espíritus y sucesos extraños.',
+          example: 'Soushenji de Gan Bao',
+          key: 'Para su autor, esos materiales se consideraban reales aunque hoy se lean como ficción.'
+        },
+        {
+          topic: 'Ficción',
+          era: 'Dinastías del Sur',
+          question: '¿Qué obra se centra en nuevas conversaciones y anécdotas contemporáneas?',
+          options: ['Shishuo Xinyu', 'Hanshu', 'Yijing (Clásico de los cambios)', 'Liji'],
+          answer: 0,
+          explanation: 'Shishuo Xinyu se cita como colección de anécdotas y conversaciones breves.',
+          example: 'Shishuo Xinyu de Liu Yiqing',
+          key: 'Muestra el gusto por la anécdota, la miniatura narrativa y el retrato social.'
+        },
+        {
+          topic: 'Ficción',
+          era: 'Dinastías del Sur',
+          question: '¿Cuál de las siguientes colecciones está orientada al humor y a las historias de risa?',
+          options: ['Xiaolin', 'Shiji', 'Baopuzi', 'Jujie'],
+          answer: 0,
+          explanation: 'Xiaolin se traduce en los apuntes como un bosque para reírse y se asocia a chistes e historias cómicas.',
+          example: 'Xiaolin (bosque para reírse)',
+          key: 'Forma parte de la diversificación de la ficción breve.'
+        },
+        {
+          topic: 'Prosa Tang',
+          era: 'Tang',
+          question: 'En la prosa Tang, ¿qué estilo termina imponiéndose según los apuntes?',
+          options: ['Pianwen', 'Guwen', 'Jintishi', 'Guofeng'],
+          answer: 1,
+          explanation: 'La prosa Tang enfrenta pianwen y guwen, pero el guwen acaba imponiéndose con Han Yu y Liu Zongyuan.',
+          example: 'Guwen de la dinastía Tang',
+          key: 'Recupera una prosa más sobria y vinculada a los clásicos.'
+        },
+        {
+          topic: 'Prosa Tang',
+          era: 'Tang',
+          question: '¿Qué pareja de autores aparece asociada al triunfo del guwen en la dinastía Tang?',
+          options: ['Han Yu y Liu Zongyuan', 'Ban Zhao y Ban Gu', 'Sima Qian y Sima Tan', 'Cao Pi y Cao Zhi'],
+          answer: 0,
+          explanation: 'Ambos nombres se mencionan como impulsores del estilo guwen en la prosa Tang.',
+          example: 'Han Yu y Liu Zongyuan',
+          key: 'Su apuesta reactiva una prosa más clásica frente al pianwen.'
+        },
+        {
+          topic: 'Narrativa Tang',
+          era: 'Tang',
+          question: '¿Qué rasgo corresponde al bianwen?',
+          options: [
+            'Alterna prosa y verso y mezcla lengua clásica con vernacular',
+            'Consiste solo en himnos rituales de corte',
+            'Elimina todo elemento budista',
+            'Usa exclusivamente frases de cuatro caracteres'
+          ],
+          answer: 0,
+          explanation: 'El bianwen se describe como una forma narrativa influida por el budismo, híbrida y flexible en lenguaje y forma.',
+          example: 'Bianwen budista',
+          key: 'Parábolas y anécdotas con mezcla de registros y fuerte componente oral.'
+        },
+        {
+          topic: 'Narrativa Tang',
+          era: 'Tang',
+          question: '¿Cuál es el género principal de la ficción Tang en los apuntes?',
+          options: ['Chuanqi', 'Fu', 'Song (himnos)', 'Benji'],
+          answer: 0,
+          explanation: 'El chuanqi aparece como el género central de la narrativa Tang.',
+          example: 'Chuanqi Tang',
+          key: 'Desarrolla historias históricas, religiosas, amorosas y de caballería o aventura.'
+        },
+        {
+          topic: 'Narrativa Tang',
+          era: 'Tang',
+          question: '¿Cuál de estos bloques temáticos SÍ pertenece al chuanqi según los apuntes?',
+          options: [
+            'Historias de personajes históricos',
+            'Solo tratados de astronomía',
+            'Únicamente manuales rituales',
+            'Exclusivamente comentarios al Yijing'
+          ],
+          answer: 0,
+          explanation: 'Los cuatro bloques del chuanqi incluyen historia, religión/magia, amor y caballería/aventuras.',
+          example: 'Chuanqi Tang',
+          key: 'Es una narrativa de finalidad lúdica, muy descriptiva y a menudo moralizada.'
+        },
+        {
+          topic: 'Narrativa Tang',
+          era: 'Tang',
+          question: '¿Qué rasgo narrativo se atribuye con frecuencia al chuanqi?',
+          options: [
+            'Ausencia total de descripciones y de personajes femeninos',
+            'Comentarios morales finales y presencia del autor con fechas y lugares concretos',
+            'Uso obligatorio de hexagramas para ordenar la trama',
+            'Prohibición de mezclar amor y aventura'
+          ],
+          answer: 1,
+          explanation: 'Los apuntes destacan la abundancia descriptiva y la intervención autorial como marca del chuanqi.',
+          example: 'Narraciones chuanqi',
+          key: 'Detalle espacial, temporal y moralización final en muchos relatos.'
+        },
+        {
+          topic: 'Baladas',
+          era: 'Norte y sur / tradición yuefu',
+          question: '¿Qué texto se destaca como balada en cinco partes y suele relacionarse con el debate entre piedad filial e independencia femenina?',
+          options: ['Balada de Mulán', 'Lisao (La tristeza de la separación)', 'Shujing (Clásico de los documentos)', 'Daren'],
+          answer: 0,
+          explanation: 'La balada de Mulán se menciona como ejemplo sobresaliente del resurgir de baladas y yuefu.',
+          example: 'Balada de Mulán',
+          key: 'Combina guerra, identidad y lectura moral o de agencia femenina.'
+        },
+        {
+          topic: 'Baladas',
+          era: 'Norte y sur / tradición yuefu',
+          question: 'Según los apuntes, ¿qué diferencia se subraya entre la baladística del norte y la del sur?',
+          options: [
+            'El norte se vincula más a aventuras y batallas; el sur, a aristocracia, entretenimiento y temas amorosos',
+            'El sur trata solo de guerras y el norte solo de amor',
+            'Ambas usan exactamente la misma métrica y temática',
+            'El norte elimina la música y el sur la narración'
+          ],
+          answer: 0,
+          explanation: 'Los apuntes distinguen claramente una cultura fronteriza y guerrera en el norte y un ambiente aristocrático en el sur.',
+          example: 'Baladas del norte y del sur',
+          key: 'En el sur se busca mayor refinamiento métrico, a menudo con versos de 4 o 5 caracteres.'
+        },
+        {
+          topic: 'Poesía',
+          era: 'Clásicos chinos',
+          question: '¿Qué obra está pensada para ser cantada y organiza 305 poemas en himnos, odas y aires del reino?',
+          options: ['Shijing (Clásico de la poesía)', 'Hanshu', 'Baopuzi', 'Soushenji'],
+          answer: 0,
+          explanation: 'El Shijing es el gran clásico poético de referencia en los apuntes.',
+          example: 'Shijing (Clásico de la poesía)',
+          key: 'Versos de cuatro caracteres, paralelismos y gran influencia sobre la tradición posterior.'
+        },
+        {
+          topic: 'Poesía',
+          era: 'Tang',
+          question: '¿Qué estilo poético contemporáneo aparece en la poesía Tang según los apuntes?',
+          options: ['Jintishi', 'Xiaoshuo (conversaciones pequeñas)', 'Biao', 'Liezhuan'],
+          answer: 0,
+          explanation: 'El jintishi se presenta como el estilo contemporáneo de la poesía Tang.',
+          example: 'Jintishi',
+          key: 'Convive con shi y gushi, normalmente en versos de 5 a 7 sílabas.'
+        },
+        {
+          topic: 'Poesía',
+          era: 'Tang',
+          question: '¿Qué forma del jintishi tiene 8 versos?',
+          options: ['Lushi', 'Jueju', 'Pailu', 'Song'],
+          answer: 0,
+          explanation: 'Los apuntes distinguen lushi, jueju y pailu por la extensión.',
+          example: 'Lushi',
+          key: 'Jueju tiene 4 versos y pailu más de 8.'
+        },
+        {
+          topic: 'Poesía',
+          era: 'Tang',
+          question: '¿Qué forma del jintishi tiene 4 versos?',
+          options: ['Pailu', 'Jueju', 'Lushi', 'Shu'],
+          answer: 1,
+          explanation: 'El jueju es la forma breve de cuatro versos.',
+          example: 'Jueju',
+          key: 'Se caracteriza por condensación expresiva dentro del sistema tonal Tang.'
+        },
+        {
+          topic: 'Escritura y conceptos',
+          era: 'Orígenes de la escritura china',
+          question: '¿Cómo se llaman las inscripciones más antiguas sobre caparazones de tortuga y huesos animales?',
+          options: ['Jiaguwen', 'Jinwen', 'Bianwen', 'Guwen'],
+          answer: 0,
+          explanation: 'Los jiaguwen son las escrituras tempranas ligadas a huesos oraculares y caparazones.',
+          example: 'Jiaguwen',
+          key: 'Se relacionan con adivinación, poder político y comunicación con los muertos.'
+        },
+        {
+          topic: 'Escritura y conceptos',
+          era: 'Siglo XIII a. C.',
+          question: '¿Qué nombre reciben las inscripciones sobre bronce mencionadas en los apuntes?',
+          options: ['Jinwen', 'Jiaguwen', 'Xiaoshuo', 'Liezhuan'],
+          answer: 0,
+          explanation: 'Los jinwen son inscripciones en bronce y muestran una evolución importante de la escritura.',
+          example: 'Jinwen',
+          key: 'Pasan del ámbito cortesano a una mayor complejidad formal y visual.'
+        },
+        {
+          topic: 'Escritura y conceptos',
+          era: 'Conceptos literarios',
+          question: '¿Qué significa wenxue según los apuntes?',
+          options: ['Literatura', 'Ritual', 'Historia imperial', 'Adivinación'],
+          answer: 0,
+          explanation: 'Los apuntes indican expresamente que wenxue significa literatura en chino.',
+          example: 'Wenxue',
+          key: 'Se asocia al valor cultural e intelectual de la escritura.'
+        },
+        {
+          topic: 'Escritura y conceptos',
+          era: 'Conceptos literarios',
+          question: '¿Qué término chino se usa para designar un clásico?',
+          options: ['Jing', 'Fu', 'Shi', 'Dao'],
+          answer: 0,
+          explanation: 'En los apuntes se explica que clásico en chino es jing.',
+          example: 'Jing',
+          key: 'Se compara con un telar que permite unir hilos para crear algo valioso.'
+        },
+        {
+          topic: 'Escritura y conceptos',
+          era: 'Reinos combatientes',
+          question: '¿Qué reino del sur aparece descrito como rico, muy poblado, con lengua propia y religión chamánica?',
+          options: ['Chu', 'Qin', 'Qi', 'Lu'],
+          answer: 0,
+          explanation: 'El reino de Chu se presenta como una zona culturalmente muy rica y diferenciada.',
+          example: 'Chu',
+          key: 'Su tradición poética tendrá rasgos propios y muy influyentes.'
+        },
+        {
+          topic: 'Clásicos',
+          era: 'Zhou / clásicos chinos',
+          question: 'Dentro del Shijing (Clásico de la poesía), ¿qué bloque recibe el nombre de ya?',
+          options: ['Odas', 'Himnos', 'Biografías', 'Mesas cronológicas'],
+          answer: 0,
+          explanation: 'Las ya son las odas, divididas en mayores y menores.',
+          example: 'Ya (odas)',
+          key: 'Las mayores se vinculan a celebraciones y las menores a canciones más populares.'
+        },
+        {
+          topic: 'Clásicos',
+          era: 'Zhou / clásicos chinos',
+          question: '¿Qué sección del Shijing reúne 105 piezas en dos grupos?',
+          options: ['Ya (odas)', 'Song (himnos)', 'Guofeng', 'Shu'],
+          answer: 0,
+          explanation: 'Las odas del Shijing suman 105 piezas y se reparten en mayores y menores.',
+          example: 'Ya (odas)',
+          key: 'Combinan celebración, alabanza, crítica y canción popular.'
+        },
+        {
+          topic: 'Clásicos',
+          era: 'Zhou / clásicos chinos',
+          question: '¿Qué bloque del Shijing reúne 40 piezas divididas en tres grupos?',
+          options: ['Song (himnos)', 'Ya', 'Guofeng', 'Biao'],
+          answer: 0,
+          explanation: 'Los himnos se distribuyen en himnos de Zhou, Lu y Shang.',
+          example: 'Song (himnos)',
+          key: 'Se relacionan con solemnidad y ritual cortesano.'
+        },
+        {
+          topic: 'Clásicos',
+          era: 'Zhou / clásicos chinos',
+          question: '¿Qué obra del canon era citada en otros clásicos, según los apuntes?',
+          options: ['Shijing (Clásico de la poesía)', 'Yijing (Clásico de los cambios)', 'Baopuzi', 'Soushenji'],
+          answer: 0,
+          explanation: 'Los poemas del Shijing eran citados por otras obras clásicas.',
+          example: 'Shijing (Clásico de la poesía)',
+          key: 'Eso refuerza su centralidad cultural e intertextual.'
+        },
+        {
+          topic: 'Clásicos',
+          era: 'Zhou / clásicos chinos',
+          question: 'En el Shujing (Clásico de los documentos), ¿qué dos grandes bloques se mencionan en los apuntes?',
+          options: ['Discursos y biografías de los sabios', 'Himnos y odas', 'Amor y caballería', 'Rituales y magia'],
+          answer: 0,
+          explanation: 'El Shujing se presenta como una compilación en prosa articulada en discursos y biografías de sabios.',
+          example: 'Shujing (Clásico de los documentos)',
+          key: 'Subraya su dimensión política y didáctica.'
+        },
+        {
+          topic: 'Poesía de Chu',
+          era: 'Chu, siglos IV-III a. C.',
+          question: '¿Quién conservó la antología de los Chuci (Cantos de Chu) mencionada en los apuntes?',
+          options: ['Wang Yi', 'Ban Gu', 'Gan Bao', 'Kumarajiva'],
+          answer: 0,
+          explanation: 'Los apuntes señalan que la antología conservada de los Chuci es obra de transmisión de Wang Yi.',
+          example: 'Chuci conservados por Wang Yi',
+          key: 'Es fundamental para la pervivencia del corpus de Chu.'
+        },
+        {
+          topic: 'Poesía de Chu',
+          era: 'Chu',
+          question: '¿Qué obra o conjunto aparece en los apuntes como Jiuge?',
+          options: ['Nuevas odas', 'Libro de los cambios', 'Biografías ejemplares', 'Departamento de Música'],
+          answer: 0,
+          explanation: 'En los apuntes Jiuge aparece glosado como nuevas odas.',
+          example: 'Jiuge',
+          key: 'Se relaciona con la tradición poética y chamánica de Chu.'
+        },
+        {
+          topic: 'Poesía de Chu',
+          era: 'Chu',
+          question: '¿Qué se dice sobre Jiuzhang en los apuntes?',
+          options: [
+            'No se sabe si es obra de Qu Yuan o de otros autores',
+            'Es un comentario al Chunqiu',
+            'Es una colección de historias cómicas',
+            'Es un tratado ritual de Confucio'
+          ],
+          answer: 0,
+          explanation: 'Los apuntes dejan abierta la autoría de Jiuzhang.',
+          example: 'Jiuzhang',
+          key: 'Refleja la dificultad de atribución en parte del corpus antiguo.'
+        },
+        {
+          topic: 'Obras clave',
+          era: 'Chu',
+          question: '¿Cuántos versos se atribuyen en los apuntes a Lisao (La tristeza de la separación)?',
+          options: ['374', '305', '160', '58'],
+          answer: 0,
+          explanation: 'Los apuntes indican que Lisao tiene 374 versos.',
+          example: 'Lisao (La tristeza de la separación)',
+          key: 'Su extensión refuerza su carácter de gran elegía del exilio.'
+        },
+        {
+          topic: 'Obras clave',
+          era: 'Chu',
+          question: '¿Cuántos versos se mencionan para Preguntas al cielo?',
+          options: ['305', '374', '40', '70'],
+          answer: 0,
+          explanation: 'Preguntas al cielo aparece descrito como un poema de 305 versos.',
+          example: 'Preguntas al cielo',
+          key: 'La pieza se construye a base de interrogaciones dirigidas al cielo y a los dioses.'
+        },
+        {
+          topic: 'Obras clave',
+          era: 'Chu',
+          question: 'En Lisao (La tristeza de la separación), ¿qué aparece como refugio frente a la vida pública?',
+          options: ['El campo o la naturaleza', 'La corte imperial', 'La guerra fronteriza', 'La burocracia ritual'],
+          answer: 0,
+          explanation: 'Los apuntes asocian Lisao a la naturaleza como espacio de refugio.',
+          example: 'Lisao (La tristeza de la separación)',
+          key: 'Ese motivo será muy importante en la literatura posterior.'
+        },
+        {
+          topic: 'Obras clave',
+          era: 'Chu',
+          question: '¿Qué sucede al final del relato poético de Lisao según los apuntes?',
+          options: ['El narrador se suicida', 'El narrador es coronado emperador', 'El narrador funda una escuela ritual', 'El narrador escribe el Hanshu'],
+          answer: 0,
+          explanation: 'Los apuntes relacionan el final de Lisao con el suicidio del narrador y con la figura de su autor.',
+          example: 'Lisao (La tristeza de la separación)',
+          key: 'Acentúa el tono trágico y elegíaco del poema.'
+        },
+        {
+          topic: 'Poesía de Chu',
+          era: 'Chu, siglos IV-III a. C.',
+          question: '¿Qué elemento temático aparece con fuerza en los Chuci (Cantos de Chu)?',
+          options: ['Figuras mitológicas', 'Solo normas rituales', 'Exclusivamente datos cronológicos', 'Únicamente sátira política directa'],
+          answer: 0,
+          explanation: 'La imaginería mitológica es una de las marcas más claras del corpus de Chu.',
+          example: 'Chuci (Cantos de Chu)',
+          key: 'Se combina con imaginación desbordante y lenguaje refinado.'
+        },
+        {
+          topic: 'Poesía de Chu',
+          era: 'Chu',
+          question: '¿Cuántos poemas se mencionan en la antología de Chuci conservada en los apuntes?',
+          options: ['17', '58', '105', '305'],
+          answer: 0,
+          explanation: 'Los apuntes hablan de 17 poemas en la antología conservada.',
+          example: 'Chuci (Cantos de Chu)',
+          key: 'Es un número asociado al corpus transmitido en esa formulación de los apuntes.'
+        },
+        {
+          topic: 'Poesía de Chu',
+          era: 'Chu',
+          question: '¿Qué circunstancia biográfica se repite en la presentación de Qu Yuan?',
+          options: ['Fue desterrado del reino', 'Fue ministro legista de Qin', 'Dirigió el Yuefu imperial', 'Compiló el Liji'],
+          answer: 0,
+          explanation: 'El exilio de Qu Yuan es un dato central para entender su figura literaria.',
+          example: 'Qu Yuan',
+          key: 'Conecta biografía, voz poética y motivo del alejamiento.'
+        },
+        {
+          topic: 'Historiografía',
+          era: 'Han',
+          question: '¿Qué fechas aproximadas se dan para Sima Qian?',
+          options: ['145 a. C. - 86 a. C.', '342 a. C. - 277 a. C.', '45 d. C. - 110 d. C.', '179 a. C. - 117 a. C.'],
+          answer: 0,
+          explanation: 'Los apuntes sitúan a Sima Qian entre 145 y 86 a. C.',
+          example: 'Sima Qian',
+          key: 'Es la gran figura de la historiografía han.'
+        },
+        {
+          topic: 'Historiografía',
+          era: 'Han',
+          question: '¿Qué cargo tenía el padre de Sima Qian, Sima Tan?',
+          options: ['Gran historiador de la corte', 'Jefe del Departamento de Música', 'Monje traductor budista', 'Poeta del reino de Chu'],
+          answer: 0,
+          explanation: 'Sima Tan es presentado como Gran historiador de la corte.',
+          example: 'Sima Tan',
+          key: 'La historiografía de Sima Qian se entiende también como continuidad familiar.'
+        },
+        {
+          topic: 'Historiografía',
+          era: 'Han',
+          question: '¿Qué sucede con Sima Qian en 110 a. C. según los apuntes?',
+          options: ['Es nombrado gran astrólogo', 'Publica el Hanshu', 'Compila el Lienü Zhuan', 'Funda el chuanqi'],
+          answer: 0,
+          explanation: 'En 110 a. C. se le nombra gran astrólogo.',
+          example: 'Sima Qian',
+          key: 'Ese cargo lo vincula al saber cortesano y a la cronística oficial.'
+        },
+        {
+          topic: 'Historiografía',
+          era: 'Han',
+          question: '¿Qué ocurre en 108 a. C. en la trayectoria de Sima Qian?',
+          options: ['Hereda el cargo de su padre', 'Escribe Lisao', 'Se convierte en monje budista', 'Disuelve el Yuefu'],
+          answer: 0,
+          explanation: 'En 108 a. C. hereda el cargo de su padre.',
+          example: 'Sima Qian',
+          key: 'Es una continuidad institucional clave para su obra.'
+        },
+        {
+          topic: 'Historiografía',
+          era: 'Han',
+          question: '¿Qué familia aparece como autora del Hanshu?',
+          options: ['La familia Ban', 'La familia Cao', 'La familia Liu', 'La familia Sima Xiangru'],
+          answer: 0,
+          explanation: 'Los apuntes atribuyen el Hanshu a Ban Biao, Ban Gu y Ban Zhao.',
+          example: 'Hanshu de la familia Ban',
+          key: 'Es una obra historiográfica de elaboración familiar e intergeneracional.'
+        },
+        {
+          topic: 'Historiografía',
+          era: 'Han',
+          question: '¿Qué arco cronológico cubre el Hanshu según los apuntes?',
+          options: ['206 a. C. a 9 d. C.', '722 a. C. a 579 a. C.', '145 a. C. a 86 a. C.', 'Siglos IV-I a. C.'],
+          answer: 0,
+          explanation: 'El Hanshu cubre la historia de los Han desde 206 a. C. hasta 9 d. C.',
+          example: 'Hanshu',
+          key: 'Funciona como historia dinástica más ceñida y explicativa.'
+        },
+        {
+          topic: 'Historiografía',
+          era: 'Han',
+          question: 'En la estructura del Shiji, ¿qué son las shijia?',
+          options: ['Familias hereditarias', 'Himnos rituales', 'Baladas populares', 'Parábolas budistas'],
+          answer: 0,
+          explanation: 'Las shijia reúnen genealogías de familias destacadas.',
+          example: 'Shijia del Shiji',
+          key: 'Conectan narración histórica y linaje político.'
+        },
+        {
+          topic: 'Historiografía',
+          era: 'Han',
+          question: '¿Qué contienen los shu dentro del Shiji?',
+          options: [
+            'Compilaciones sobre rituales, astrología, música y medicina',
+            'Solo historias de amor',
+            'Únicamente anécdotas humorísticas',
+            'Poemas de guerra de los Cao'
+          ],
+          answer: 0,
+          explanation: 'Los shu funcionan como libros o tratados temáticos dentro del Shiji.',
+          example: 'Shu del Shiji',
+          key: 'Integran saberes diversos en el marco historiográfico.'
+        },
+        {
+          topic: 'Historiografía',
+          era: 'Han',
+          question: '¿Qué son los benji dentro del Shiji?',
+          options: ['Anuarios principales', 'Relatos de espíritus', 'Canciones populares', 'Comentarios budistas'],
+          answer: 0,
+          explanation: 'Los benji son los anuarios principales del Shiji.',
+          example: 'Benji del Shiji',
+          key: 'Recogen la gran crónica de hechos desde los primeros gobernantes.'
+        },
+        {
+          topic: 'Biografías',
+          era: 'Han',
+          question: '¿Qué papel se atribuye a Ban Zhao en la corte imperial?',
+          options: ['Profesora de las mujeres de la familia real', 'General fronteriza', 'Editora del Yuefu', 'Chamán de Chu'],
+          answer: 0,
+          explanation: 'Ban Zhao es presentada como profesora de la corte imperial o de las mujeres de la familia real.',
+          example: 'Ban Zhao',
+          key: 'Su figura combina saber historiográfico y función pedagógica.'
+        },
+        {
+          topic: 'Biografías',
+          era: 'Han',
+          question: '¿Cómo se organiza Jujie, según los apuntes?',
+          options: ['Una introducción y siete capítulos', 'Cincuenta capítulos y un posfacio', 'Veinte capítulos de casos extraños', 'Ocho libros de medicina'],
+          answer: 0,
+          explanation: 'Jujie se describe con una introducción y siete capítulos.',
+          example: 'Jujie',
+          key: 'Es un manual de conducta para mujeres dentro del orden confuciano.'
+        },
+        {
+          topic: 'Biografías',
+          era: 'Han',
+          question: '¿Qué finalidad se atribuye al Lienü Zhuan en los apuntes?',
+          options: ['Instrucción moral y política', 'Entretenimiento cortesano puro', 'Adivinación con hexagramas', 'Crónica militar de Qin'],
+          answer: 0,
+          explanation: 'El Lienü Zhuan se plantea con una clara utilidad instructiva.',
+          example: 'Lienü Zhuan',
+          key: 'Propone modelos femeninos en clave normativa.'
+        },
+        {
+          topic: 'Biografías',
+          era: 'Han',
+          question: '¿Cuál de estas categorías aparece entre los tipos de mujeres del Lienü Zhuan?',
+          options: ['Rectitud materna', 'Caballería fronteriza', 'Música ritual Zhou', 'Adivinación astral'],
+          answer: 0,
+          explanation: 'Los apuntes enumeran varias categorías como rectitud materna, inteligencia o pureza y sumisión.',
+          example: 'Lienü Zhuan',
+          key: 'Cada categoría encarna una virtud o advertencia moral.'
+        },
+        {
+          topic: 'Historiografía',
+          era: 'Antes de Han',
+          question: '¿Qué carencia se señala en las crónicas anteriores a los Han?',
+          options: [
+            'Faltaba una narrativa global y sistematizada que enlazara los hechos',
+            'Tenían exceso de ficción amorosa',
+            'Usaban solo lengua vernacular',
+            'Rechazaban toda cronología'
+          ],
+          answer: 0,
+          explanation: 'Los apuntes subrayan que faltaba un tratamiento general y sistemático de la historia.',
+          example: 'Crónicas anteriores a los Han',
+          key: 'Los comentarios ayudaban a dar contexto, pero no resolvían del todo esa carencia.'
+        },
+        {
+          topic: 'Historiografía',
+          era: 'Antes de Han',
+          question: '¿Qué aportaban los comentarios a las crónicas antiguas según los apuntes?',
+          options: ['Contexto narrativo', 'Métrica fija', 'Rima irregular', 'Solo genealogías'],
+          answer: 0,
+          explanation: 'Las crónicas eran muy breves y los comentarios añadían el contexto necesario.',
+          example: 'Comentarios a las crónicas',
+          key: 'Eso prepara el camino para una narrativa histórica más desarrollada.'
+        },
+        {
+          topic: 'Fu',
+          era: 'Han',
+          question: '¿Dónde se sitúa con frecuencia el fu en los apuntes?',
+          options: ['En la corte', 'En aldeas campesinas', 'En monasterios del norte', 'En compilaciones humorísticas'],
+          answer: 0,
+          explanation: 'El fu aparece como género docto y cortesano.',
+          example: 'Fu han',
+          key: 'Se relaciona con entretenimiento, exhibición literaria y formación culta.'
+        },
+        {
+          topic: 'Fu',
+          era: 'Han',
+          question: '¿Qué valoración tonal general se menciona para muchos fu?',
+          options: ['Solían ser positivos', 'Eran siempre satíricos', 'Solo hablaban de luto', 'Se oponían a toda descripción'],
+          answer: 0,
+          explanation: 'Los apuntes indican que, por lo general, los fu solían ser positivos.',
+          example: 'Fu',
+          key: 'No elimina su dimensión moral y educativa.'
+        },
+        {
+          topic: 'Fu',
+          era: 'Han',
+          question: 'Además de entretenimiento cortesano, ¿qué carácter puede tener el fu?',
+          options: ['Moral y educativo', 'Solo jurídico', 'Únicamente religioso', 'Exclusivamente biográfico'],
+          answer: 0,
+          explanation: 'Los apuntes le atribuyen también un componente moral y educativo.',
+          example: 'Fu',
+          key: 'Combina brillo verbal con función formativa.'
+        },
+        {
+          topic: 'Fu',
+          era: 'Han',
+          question: '¿Qué se dice sobre los subgéneros del fu?',
+          options: ['Hay muchos subgéneros distintos', 'Solo existe uno', 'Desaparecen antes de los Han', 'Son idénticos al chuanqi'],
+          answer: 0,
+          explanation: 'El género se describe como formalmente poco cerrado y con numerosos subgéneros.',
+          example: 'Fu',
+          key: 'Esa flexibilidad explica su ambigüedad entre lo lírico y lo narrativo.'
+        },
+        {
+          topic: 'Fu',
+          era: 'Han',
+          question: '¿Qué composición de Sima Xiangru se traduce en los apuntes como El parque superior?',
+          options: ['Shanglin', 'Zixu', 'Meiren', 'Daren'],
+          answer: 0,
+          explanation: 'Shanglin aparece glosado como El parque superior.',
+          example: 'Shanglin',
+          key: 'Es una de las composiciones más conocidas asociadas a Sima Xiangru.'
+        },
+        {
+          topic: 'Yuefu',
+          era: 'Han',
+          question: '¿En qué fecha se disuelve la oficina imperial del Yuefu (Departamento de Música) según los apuntes?',
+          options: ['7 a. C.', '221 a. C.', '110 a. C.', '45 d. C.'],
+          answer: 0,
+          explanation: 'Los apuntes sitúan la disolución del Yuefu en 7 a. C.',
+          example: 'Yuefu (Departamento de Música)',
+          key: 'Pese a ello, muchas obras se conservaron en antologías posteriores.'
+        },
+        {
+          topic: 'Yuefu',
+          era: 'Han',
+          question: '¿Qué función política se atribuye al Yuefu (Departamento de Música)?',
+          options: ['Herramienta de control político', 'Manual ritual exclusivamente privado', 'Registro de genealogías nobles', 'Crítica teórica de la poesía Tang'],
+          answer: 0,
+          explanation: 'El Yuefu no solo recopila canciones, también sirve como instrumento político.',
+          example: 'Yuefu (Departamento de Música)',
+          key: 'Recoge voces populares y permite observar el estado del imperio.'
+        },
+        {
+          topic: 'Yuefu',
+          era: 'Han',
+          question: '¿Qué diversidad social se menciona en las canciones del Yuefu?',
+          options: [
+            'Proceden de clases y orígenes chinos y no chinos muy diversos',
+            'Solo las escriben ministros imperiales',
+            'Son exclusivas de mujeres aristócratas',
+            'Pertenecen solo al reino de Lu'
+          ],
+          answer: 0,
+          explanation: 'Los apuntes insisten en la amplitud de procedencias sociales y culturales del Yuefu.',
+          example: 'Canciones del Yuefu',
+          key: 'Ese rasgo las hace muy valiosas como testimonio literario y cultural.'
+        },
+        {
+          topic: 'Baladas',
+          era: 'Norte y sur',
+          question: 'En el norte, ¿a qué se vinculan especialmente las canciones y baladas resurgidas?',
+          options: ['A aventuras y batallas de pueblos nómadas', 'A manuales rituales aristocráticos', 'A comentarios al Shujing', 'A monografías sobre literatura'],
+          answer: 0,
+          explanation: 'Los apuntes relacionan la producción del norte con frontera, guerra y nomadismo.',
+          example: 'Baladas del norte',
+          key: 'También reflejan procesos de sinización.'
+        },
+        {
+          topic: 'Budismo',
+          era: 'Siglos I-II d. C.',
+          question: '¿Cuándo llega el budismo a China según los apuntes?',
+          options: ['Siglos I-II d. C.', 'Siglo XI a. C.', 'Siglo V a. C.', 'Finales del Tang'],
+          answer: 0,
+          explanation: 'Los apuntes sitúan la llegada del budismo a China entre los siglos I y II d. C.',
+          example: 'Llegada del budismo a China',
+          key: 'Aprovecha la debilidad del confucianismo en una época de crisis.'
+        },
+        {
+          topic: 'Budismo',
+          era: 'Final de Han',
+          question: '¿Cómo fue estudiado inicialmente el budismo por muchas familias literarias y aristocráticas?',
+          options: ['De modo filosófico', 'Solo como rito militar', 'Solo como poesía de frontera', 'Como himno cortesano'],
+          answer: 0,
+          explanation: 'Primero se estudia filosóficamente y luego se aplica.',
+          example: 'Recepción inicial del budismo',
+          key: 'Su recepción cambia según grupos sociales y regiones.'
+        },
+        {
+          topic: 'Budismo',
+          era: 'Final de Han',
+          question: '¿Por qué adoptan el budismo muchos campesinos según los apuntes?',
+          options: ['Como consolación ante la pobreza', 'Por imposición del Yuefu', 'Para aprender rimas AA0A', 'Por exigencia de los exámenes imperiales'],
+          answer: 0,
+          explanation: 'La dimensión consoladora del budismo es clave en su expansión popular.',
+          example: 'Difusión social del budismo',
+          key: 'La religión se adapta a necesidades sociales distintas.'
+        },
+        {
+          topic: 'Budismo',
+          era: 'Final de Han',
+          question: '¿Cómo se practicaba al inicio el budismo, debido a la persecución?',
+          options: ['En círculos cerrados', 'En teatros públicos imperiales', 'Solo en la corte Tang', 'Exclusivamente en la frontera norte'],
+          answer: 0,
+          explanation: 'La persecución inicial obliga a una práctica más restringida.',
+          example: 'Primer budismo en China',
+          key: 'Luego se irá integrando y sincretizando con otras corrientes.'
+        },
+        {
+          topic: 'Budismo',
+          era: 'Primeras traducciones',
+          question: '¿Qué problema tenían muchas primeras traducciones budistas, según los apuntes?',
+          options: [
+            'Eran básicamente transcripciones del sánscrito a caracteres chinos',
+            'Usaban solo lenguaje campesino sin escritura',
+            'Eliminaban toda prosa',
+            'Se escribían en hexagramas'
+          ],
+          answer: 0,
+          explanation: 'Los apuntes indican que esas primeras traducciones dejaban bastante que desear.',
+          example: 'Primeras traducciones budistas',
+          key: 'Más tarde habrá una mejor adaptación estilística y doctrinal.'
+        },
+        {
+          topic: 'Ensayo',
+          era: 'Entre Han y Tang',
+          question: '¿Cuántos capítulos externos e internos tiene el Baopuzi según los apuntes?',
+          options: ['50 externos y 20 internos', '20 externos y 50 internos', '8 externos y 64 internos', '7 externos y 15 internos'],
+          answer: 0,
+          explanation: 'Baopuzi se divide en 50 capítulos externos y 20 internos.',
+          example: 'Baopuzi',
+          key: 'Los externos tratan sociedad y cultura; los internos, esoterismo.'
+        },
+        {
+          topic: 'Ensayo',
+          era: 'Seis Dinastías',
+          question: '¿Cuántos autores forman el grupo de los Siete Sabios del Bosque del Bambú?',
+          options: ['Siete', 'Cinco', 'Ocho', 'Doce'],
+          answer: 0,
+          explanation: 'El propio nombre del grupo alude a sus siete integrantes.',
+          example: 'Siete Sabios del Bosque del Bambú',
+          key: 'Encarnan retiro, alcohol y conversación filosófica.'
+        },
+        {
+          topic: 'Ensayo',
+          era: 'Seis Dinastías',
+          question: '¿Cuál de estos nombres pertenece a los Siete Sabios del Bosque del Bambú según los apuntes?',
+          options: ['Ruan Ji', 'Ban Zhao', 'Qu Yuan', 'Sima Tan'],
+          answer: 0,
+          explanation: 'Ruan Ji es uno de los miembros mencionados del grupo.',
+          example: 'Ruan Ji',
+          key: 'Su figura se asocia al giro personal y filosófico de la literatura.'
+        },
+        {
+          topic: 'Ensayo',
+          era: 'Seis Dinastías',
+          question: '¿Cuál de estos nombres pertenece también a los Siete Sabios del Bosque del Bambú?',
+          options: ['Xi Kang', 'Han Yu', 'Gan Bao', 'Liu Yiqing'],
+          answer: 0,
+          explanation: 'Xi Kang se cita junto a Ruan Ji como parte del grupo.',
+          example: 'Xi Kang',
+          key: 'La leyenda del grupo influye en la imagen del retiro intelectual.'
+        },
+        {
+          topic: 'Historia literaria',
+          era: 'Final de Han y Tres Reinos',
+          question: '¿Qué familia cobra especial importancia en el final de Han y los Tres Reinos?',
+          options: ['La familia Cao', 'La familia Ban', 'La familia Wang Yi', 'La familia Kumarajiva'],
+          answer: 0,
+          explanation: 'Los apuntes destacan a Cao Cao, Cao Pi y Cao Zhi.',
+          example: 'Familia Cao',
+          key: 'Su entorno es fundamental para la poesía y la reflexión literaria de la época.'
+        },
+        {
+          topic: 'Historia literaria',
+          era: 'Final de Han y Tres Reinos',
+          question: '¿Qué cambio general experimenta la literatura en este periodo de crisis política?',
+          options: [
+            'Pasa de ser más social y política a ser más personal',
+            'Abandona todo interés por el yo',
+            'Se reduce exclusivamente a la crónica histórica',
+            'Elimina por completo el budismo y el daoísmo'
+          ],
+          answer: 0,
+          explanation: 'Los apuntes subrayan el paso a una literatura más personal, preciosista y estilizada.',
+          example: 'Final de Han y principios de Tang',
+          key: 'Se intensifican el yo, el estilo y las reuniones literarias.'
+        },
+        {
+          topic: 'Ficción',
+          era: 'Dinastías del Sur y Tang',
+          question: '¿Cómo sobrevive el xiaoshuo (conversaciones pequeñas) según los apuntes sobre Tang?',
+          options: ['A través de compilaciones', 'Solo por transmisión oral sin textos', 'Mediante hexagramas rituales', 'Por inclusión en el Liji'],
+          answer: 0,
+          explanation: 'La tradición del xiaoshuo se mantiene mediante compilaciones de materiales diversos.',
+          example: 'Xiaoshuo (conversaciones pequeñas)',
+          key: 'Eso explica su carácter híbrido y acumulativo.'
+        },
+        {
+          topic: 'Ficción',
+          era: 'Tang',
+          question: '¿Cómo consideraban muchos funcionarios los materiales que compilaban dentro del xiaoshuo?',
+          options: ['Como hechos reales, no como ficción', 'Como simple sátira moderna', 'Como poesía ritual', 'Como tratados médicos'],
+          answer: 0,
+          explanation: 'Los apuntes aclaran que no se concebían necesariamente como ficción en sentido moderno.',
+          example: 'Compilaciones de xiaoshuo',
+          key: 'La frontera entre historia, anécdota y ficción era distinta.'
+        },
+        {
+          topic: 'Ficción',
+          era: 'Tang',
+          question: '¿Qué antecedente de la narrativa Tang se menciona como registro de lo extraordinario?',
+          options: ['Zhiguai', 'Guwen', 'Jujie', 'Lushi'],
+          answer: 0,
+          explanation: 'El zhiguai aparece como precedente directo de parte de la ficción Tang.',
+          example: 'Zhiguai',
+          key: 'Aporta lo extraño, lo misterioso y lo sobrenatural.'
+        },
+        {
+          topic: 'Narrativa Tang',
+          era: 'Tang',
+          question: '¿Qué finalidad general se atribuye al chuanqi?',
+          options: ['Lúdica', 'Exclusivamente ritual', 'Solo administrativa', 'Únicamente genealógica'],
+          answer: 0,
+          explanation: 'Los apuntes destacan la finalidad lúdica del chuanqi.',
+          example: 'Chuanqi',
+          key: 'Eso no impide la presencia de moralejas y comentario autorial.'
+        },
+        {
+          topic: 'Narrativa Tang',
+          era: 'Tang',
+          question: '¿Cuál de estos bloques temáticos del chuanqi pertenece claramente a la lista de los apuntes?',
+          options: ['Historias de amor', 'Solo manuales rituales', 'Exclusivamente tratados agrícolas', 'Únicamente debates filológicos'],
+          answer: 0,
+          explanation: 'Las historias de amor son uno de los cuatro grandes bloques del chuanqi.',
+          example: 'Chuanqi',
+          key: 'Los otros bloques son historia, religión/magia y caballería/aventuras.'
+        },
+        {
+          topic: 'Narrativa Tang',
+          era: 'Tang',
+          question: '¿Qué otro bloque temático figura en el chuanqi según los apuntes?',
+          options: ['Historias de caballeros o aventuras', 'Biografías fiscales', 'Hexagramas bagua', 'Comentarios a las odas'],
+          answer: 0,
+          explanation: 'El chuanqi incluye relatos de caballería y aventura.',
+          example: 'Chuanqi',
+          key: 'Da cabida a acción, viajes y episodios extraordinarios.'
+        },
+        {
+          topic: 'Narrativa Tang',
+          era: 'Tang',
+          question: '¿Qué presencia de personajes se destaca en el chuanqi?',
+          options: ['Abundan los personajes femeninos', 'Solo aparecen monjes', 'No hay individuos concretos', 'Solo intervienen emperadores'],
+          answer: 0,
+          explanation: 'Los apuntes señalan que el chuanqi está lleno de personajes femeninos.',
+          example: 'Chuanqi',
+          key: 'Se combina con descripción abundante de escenarios y situaciones.'
+        },
+        {
+          topic: 'Narrativa Tang',
+          era: 'Tang',
+          question: '¿Qué influencias doctrinales se asocian al bianwen en los apuntes?',
+          options: ['Budismo y taoísmo', 'Solo confucianismo', 'Solo legismo', 'Solo formalismo ruso'],
+          answer: 0,
+          explanation: 'Los apuntes relacionan el bianwen con influencias budistas y taoístas.',
+          example: 'Bianwen',
+          key: 'Se trata de una forma híbrida entre oralidad, prosa y verso.'
+        },
+        {
+          topic: 'Ficción',
+          era: 'Dinastías del Sur',
+          question: '¿Qué obra se atribuye a Liu Yiqing en los apuntes?',
+          options: ['Shishuo Xinyu', 'Hanshu', 'Baopuzi', 'Lisao (La tristeza de la separación)'],
+          answer: 0,
+          explanation: 'Liu Yiqing aparece como autor de Shishuo Xinyu.',
+          example: 'Shishuo Xinyu',
+          key: 'Es una colección de conversaciones y anécdotas contemporáneas.'
+        },
+        {
+          topic: 'Ficción',
+          era: 'Dinastías del Sur',
+          question: '¿Qué obra se atribuye a Handan Chun?',
+          options: ['Xiaolin', 'Soushenji', 'Wenxin Diaolong (El corazón de la literatura y el cincelado de los dragones)', 'Jujie'],
+          answer: 0,
+          explanation: 'Handan Chun es el autor citado de Xiaolin.',
+          example: 'Xiaolin',
+          key: 'Se asocia al humor y a las historias para reírse.'
+        },
+        {
+          topic: 'Ficción',
+          era: 'Dinastías del Sur',
+          question: '¿Qué autor compiló Soushenji según los apuntes?',
+          options: ['Gan Bao', 'Ban Gu', 'Cao Pi', 'Tao Yuanming'],
+          answer: 0,
+          explanation: 'Gan Bao es el nombre asociado a Soushenji.',
+          example: 'Soushenji de Gan Bao',
+          key: 'Es una colección de casos misteriosos y extraños.'
+        },
+        {
+          topic: 'Ficción',
+          era: 'Dinastías del Sur',
+          question: '¿Cómo consideraba Gan Bao los relatos recogidos en Soushenji?',
+          options: ['Como historias reales', 'Como bromas escolares', 'Como odas cortesanas', 'Como comentarios al Yijing'],
+          answer: 0,
+          explanation: 'Los apuntes indican que para su autor eran historias reales aunque hoy se lean como ficción.',
+          example: 'Soushenji',
+          key: 'Refleja otra noción de verdad narrativa en la época.'
+        },
+        {
+          topic: 'Prosa Tang',
+          era: 'Tang',
+          question: '¿Qué estilo aparece definido como más contemporáneo en la oposición de la prosa Tang?',
+          options: ['Pianwen', 'Guwen', 'Lushi', 'Guofeng'],
+          answer: 0,
+          explanation: 'Los apuntes caracterizan el pianwen como estilo más contemporáneo frente al guwen.',
+          example: 'Pianwen',
+          key: 'El guwen, en cambio, se vincula más a los clásicos.'
+        },
+        {
+          topic: 'Prosa Tang',
+          era: 'Tang',
+          question: '¿Cómo se define el guwen en los apuntes?',
+          options: ['Estilo más basado en los clásicos', 'Lengua vernacular mezclada con prosa y verso', 'Registro cómico breve', 'Himno ritual cantado'],
+          answer: 0,
+          explanation: 'El guwen se presenta como una recuperación de la prosa inspirada en los clásicos.',
+          example: 'Guwen',
+          key: 'Se opone al decorativismo del pianwen.'
+        },
+        {
+          topic: 'Poesía',
+          era: 'Tang',
+          question: '¿Cómo califican los apuntes la etapa Tang en relación con la poesía?',
+          options: ['Época dorada', 'Periodo de desaparición poética', 'Momento puramente ritual', 'Fase exclusivamente historiográfica'],
+          answer: 0,
+          explanation: 'La dinastía Tang se presenta como la época dorada de la poesía.',
+          example: 'Poesía Tang',
+          key: 'Se desarrolla gran riqueza temática y diversidad de corrientes.'
+        },
+        {
+          topic: 'Poesía',
+          era: 'Tang',
+          question: '¿En cuántas épocas dividen los apuntes la poesía Tang?',
+          options: ['Cuatro', 'Dos', 'Cinco', 'Siete'],
+          answer: 0,
+          explanation: 'Se distinguen Principios de Tang, Esplendor, Mediados de Tang y Finales de Tang.',
+          example: 'División de la poesía Tang',
+          key: 'Es una periodización interna propia del desarrollo poético Tang.'
+        },
+        {
+          topic: 'Poesía',
+          era: 'Tang, época del Esplendor',
+          question: '¿Cuál de estas corrientes se menciona para la época del Esplendor de Tang?',
+          options: ['Paisajes', 'Solo rituales agrícolas', 'Únicamente biografías femeninas', 'Solo comentarios al Shijing'],
+          answer: 0,
+          explanation: 'Los apuntes citan, entre otras, la corriente de paisajes en el Esplendor Tang.',
+          example: 'Corrientes del Esplendor Tang',
+          key: 'También aparecen románticos, realismo social y frontera.'
+        },
+        {
+          topic: 'Poesía',
+          era: 'Tang, mediados',
+          question: '¿Qué corriente aparece entre las de mediados de Tang?',
+          options: ['Nuevo yuefu', 'Solo himnos Shang', 'Exclusivamente comentarios Zuo', 'Solo adivinación'],
+          answer: 0,
+          explanation: 'A mediados de Tang los apuntes citan naturaleza, realismo social y nuevo yuefu.',
+          example: 'Nuevo yuefu',
+          key: 'Muestra la continuidad y renovación de modelos anteriores.'
+        },
+        {
+          topic: 'Poesía',
+          era: 'Tang',
+          question: '¿Qué se dice sobre la medida usual de shi y gushi en los apuntes?',
+          options: ['De 5 a 7 sílabas', 'De 3 sílabas fijas', 'Solo 4 caracteres sin excepción', 'Más de 20 versos obligatorios'],
+          answer: 0,
+          explanation: 'Los apuntes indican que shi y gushi se mueven entre 5 y 7 sílabas.',
+          example: 'Shi y gushi',
+          key: 'Dentro de este marco se desarrollan las formas contemporáneas.'
+        },
+        {
+          topic: 'Poesía',
+          era: 'Tang',
+          question: '¿Qué forma del jintishi tiene un número indeterminado de versos, superior a ocho?',
+          options: ['Pailu', 'Jueju', 'Lushi', 'Song'],
+          answer: 0,
+          explanation: 'El pailu es la forma más extensa dentro de las citadas en los apuntes.',
+          example: 'Pailu',
+          key: 'Se opone a la concisión de jueju y a la medida cerrada del lushi.'
+        },
+        {
+          topic: 'Poesía',
+          era: 'Tang',
+          question: '¿Qué se dice de muchos poetas Tang en relación con el poder?',
+          options: ['Solían ser funcionarios o gente al margen del poder', 'Eran solo campesinos analfabetos', 'Pertenecían exclusivamente al clero budista', 'No tenían relación con círculos literarios'],
+          answer: 0,
+          explanation: 'Los apuntes resaltan la fuerte conexión entre poesía, administración y círculos cultos.',
+          example: 'Poetas Tang',
+          key: 'Aun así, también hay figuras situadas al margen del poder.'
+        },
+        {
+          topic: 'Poesía',
+          era: 'Tang',
+          question: '¿Cómo se denomina en los apuntes a las distintas corrientes o escuelas de la poesía Tang?',
+          options: ['Liupai', 'Bagua', 'Benji', 'Jiaguwen'],
+          answer: 0,
+          explanation: 'Los apuntes usan el término liupai para referirse a corrientes o escuelas.',
+          example: 'Liupai',
+          key: 'Da cuenta de la diversidad interna de la poesía Tang.'
+        },
+        {
+          topic: 'Baladas',
+          era: 'Norte y sur',
+          question: '¿Quiénes suelen protagonizar muchas canciones del norte según los apuntes?',
+          options: ['Los pueblos nómadas', 'Las damas de la corte Zhou', 'Solo burócratas Han', 'Únicamente monjes traductores'],
+          answer: 0,
+          explanation: 'Los protagonistas de muchas composiciones del norte son pueblos nómadas.',
+          example: 'Baladas del norte',
+          key: 'Se relacionan con frontera, guerra y sinización.'
+        },
+        {
+          topic: 'Baladas',
+          era: 'Sur',
+          question: '¿A qué se dedica más la producción literaria del sur en esta etapa según los apuntes?',
+          options: ['A la aristocracia, el entretenimiento y temas amorosos', 'A la campaña militar constante', 'A la adivinación con hexagramas', 'A destruir bibliotecas privadas'],
+          answer: 0,
+          explanation: 'El sur aparece más ligado a ocio aristocrático y refinamiento.',
+          example: 'Producción del sur',
+          key: 'Se diferencia del tono guerrero de muchas piezas del norte.'
+        },
+        {
+          topic: 'Baladas',
+          era: 'Sur',
+          question: '¿Qué intento formal se menciona en las composiciones del sur?',
+          options: ['Darles métrica de 4 o 5 caracteres por verso', 'Eliminar totalmente la métrica', 'Usar solo versos de 20 caracteres', 'Escribir solo en prosa'],
+          answer: 0,
+          explanation: 'Los apuntes dicen que en el sur intentan dar una métrica más refinada de 4 o 5 caracteres.',
+          example: 'Baladas del sur',
+          key: 'Se asocia a mayor sofisticación formal.'
+        },
+        {
+          topic: 'Baladas',
+          era: 'Sur',
+          question: '¿Qué juego de voces aparece en algunas composiciones del sur?',
+          options: ['Voz masculina y femenina', 'Solo voz ritual coral', 'Solo voz imperial', 'Ausencia total de hablante'],
+          answer: 0,
+          explanation: 'Los apuntes mencionan la presencia de una voz masculina y femenina.',
+          example: 'Baladas del sur',
+          key: 'Ese rasgo acerca estas piezas al tema amoroso y al diálogo.'
+        },
+        {
+          topic: 'Baladas',
+          era: 'Tradición de Mulán',
+          question: '¿De qué pueblos del norte se cree que podía proceder Mulán según los apuntes?',
+          options: ['Xianbei y mouran', 'Zhou y Lu', 'Qin y Qi', 'Shang y Han'],
+          answer: 0,
+          explanation: 'Los apuntes asocian a Mulán con pueblos del norte como xianbei y mouran.',
+          example: 'Balada de Mulán',
+          key: 'Eso refuerza su inserción en una cultura fronteriza y militar.'
+        },
+        {
+          topic: 'Baladas',
+          era: 'Tradición de Mulán',
+          question: '¿Cuántas partes se señalan en la Balada de Mulán?',
+          options: ['Cinco', 'Cuatro', 'Ocho', 'Dos'],
+          answer: 0,
+          explanation: 'Los apuntes dividen la balada en cinco partes.',
+          example: 'Balada de Mulán',
+          key: 'Decisión de luchar, campaña, audiencia imperial, regreso y epílogo.'
+        },
+        {
+          topic: 'Estructuras',
+          era: 'Shijing / forma poética',
+          question: 'Si una pregunta te da el esquema "AA0A" o "ABAB", versos de 4 caracteres y paralelismos, ¿qué tradición debes reconocer?',
+          options: ['Shijing (Clásico de la poesía)', 'Chuci (Cantos de Chu)', 'Bianwen', 'Pailu'],
+          answer: 0,
+          explanation: 'Esos esquemas de rima aparecen en los apuntes para el Shijing.',
+          example: 'Rimas AA0A, 0AAA, ABAB o AABB del Shijing',
+          key: 'Asócialo a canto, paralelismo y versos cortos de cuatro caracteres.'
+        },
+        {
+          topic: 'Estructuras',
+          era: 'Shijing / forma poética',
+          question: 'Si un poema se resume como "4 / 4 / 4 / 4" con paralelismos y una de las rimas del tipo AABB, ¿qué estilo encaja mejor?',
+          options: ['Shijing (Clásico de la poesía)', 'Fu', 'Lushi', 'Baopuzi'],
+          answer: 0,
+          explanation: 'Los versos de cuatro caracteres y los paralelismos son marcas muy típicas del Shijing.',
+          example: 'Shijing (Clásico de la poesía)',
+          key: 'Es una estructura muy útil para preguntas de reconocimiento formal.'
+        },
+        {
+          topic: 'Estructuras',
+          era: 'Chu / forma poética',
+          question: 'Si te ponen una estructura del tipo "4 / 5 / 7 + xi + mito + yo poético", ¿qué debes identificar?',
+          options: ['Chuci (Cantos de Chu)', 'Shujing (Clásico de los documentos)', 'Hanshu', 'Jueju'],
+          answer: 0,
+          explanation: 'La combinación de metros variables, partícula xi e imaginación mítica remite a Chu.',
+          example: 'Chuci (Cantos de Chu)',
+          key: 'Es una señal muy clara de la poesía de Chu en examen.'
+        },
+        {
+          topic: 'Estructuras',
+          era: 'Bianwen',
+          question: 'Si el esquema formal de un texto se describe como "prosa + verso // clásico + vernacular", ¿qué género es el más probable?',
+          options: ['Bianwen', 'Song (himnos)', 'Benji', 'Yijing (Clásico de los cambios)'],
+          answer: 0,
+          explanation: 'El bianwen mezcla prosa y verso, así como lengua clásica y vernacular.',
+          example: 'Bianwen',
+          key: 'Además suele incorporar parábolas y anécdotas budistas.'
+        },
+        {
+          topic: 'Estructuras',
+          era: 'Prosa budista / pianwen',
+          question: 'Si ves una secuencia como "4-4 // 4-4 // 4-4" de frases breves emparejadas y fáciles de memorizar, ¿qué estilo encaja mejor?',
+          options: ['Pianwen de prosa budista', 'Gran fu', 'Guofeng', 'Liezhuan'],
+          answer: 0,
+          explanation: 'La prosa budista temprana se describe con frases cortas, parejas y muy memorizables.',
+          example: 'Pianwen en prosa budista',
+          key: 'Asócialo a claridad, brevedad y transmisión doctrinal.'
+        },
+        {
+          topic: 'Estructuras',
+          era: 'Tang / jintishi',
+          question: 'Si una pregunta te da una plantilla de 8 versos regulares, ¿qué forma del jintishi debes elegir?',
+          options: ['Lushi', 'Jueju', 'Pailu', 'Xiaoshuo (conversaciones pequeñas)'],
+          answer: 0,
+          explanation: 'El lushi es la forma de ocho versos dentro del jintishi.',
+          example: 'Lushi',
+          key: 'Es una pregunta formal muy típica de reconocimiento.'
+        },
+        {
+          topic: 'Estructuras',
+          era: 'Tang / jintishi',
+          question: 'Si el esquema presenta solo 4 versos regulares, ¿qué forma del jintishi corresponde?',
+          options: ['Jueju', 'Lushi', 'Pailu', 'Fu'],
+          answer: 0,
+          explanation: 'Dentro del jintishi, el jueju es la composición de cuatro versos.',
+          example: 'Jueju',
+          key: 'Se apoya en la máxima condensación expresiva.'
+        },
+        {
+          topic: 'Estructuras',
+          era: 'Tang / jintishi',
+          question: 'Si una pregunta te presenta una estructura de más de 8 versos regulares, ¿qué opción debes marcar?',
+          options: ['Pailu', 'Jueju', 'Song (himnos)', 'Shijia'],
+          answer: 0,
+          explanation: 'El pailu es la forma de extensión abierta y superior a ocho versos.',
+          example: 'Pailu',
+          key: 'Es la variante más larga entre las tres formas citadas.'
+        },
+        {
+          topic: 'Estructuras',
+          era: 'Han / fu',
+          question: 'Si en un test te aparece un texto de 500 versos o más, muy descriptivo, hiperbólico y de vocabulario complejo, ¿qué debes identificar?',
+          options: ['Gran fu', 'Yuefu (Departamento de Música)', 'Guofeng', 'Jujie'],
+          answer: 0,
+          explanation: 'Los apuntes usan el nombre gran fu para piezas de 500 versos o más.',
+          example: 'Gran fu',
+          key: 'Recuerda la asociación con extensión, enumeración y despliegue verbal.'
+        },
+        {
+          topic: 'Estructuras',
+          era: 'Han / fu',
+          question: 'Si un texto se describe formalmente como largo, ambiguo entre lírico y narrativo, con enumeraciones, rimas irregulares y a veces introducción en prosa, ¿qué género es?',
+          options: ['Fu', 'Chuanqi', 'Chunqiu (Anales de primaveras y otoños)', 'Lijing (Libro de los rituales)'],
+          answer: 0,
+          explanation: 'Esa suma de rasgos corresponde al fu según los apuntes.',
+          example: 'Fu',
+          key: 'Es una forma docta, cortesana e imaginativa.'
+        },
+        {
+          topic: 'Estructuras',
+          era: 'Han / yuefu',
+          question: 'Si una composición de examen se presenta como canción de lenguaje sencillo, tema de guerra o viaje y sin métrica ni rima estables, ¿qué género debes marcar?',
+          options: ['Yuefu (Departamento de Música)', 'Gran fu', 'Lushi', 'Shujing (Clásico de los documentos)'],
+          answer: 0,
+          explanation: 'Ese conjunto de rasgos corresponde al yuefu según los apuntes.',
+          example: 'Yuefu (Departamento de Música)',
+          key: 'Piensa en canción popular, variedad temática y forma poco fija.'
+        },
+        {
+          topic: 'Estructuras',
+          era: 'Primaveras y Otoños / prosa',
+          question: 'Si un texto se define por frases muy cortas, compactas, precisas y centradas en registrar hechos, ¿qué modelo de prosa debes reconocer?',
+          options: ['Chunqiu (Anales de primaveras y otoños)', 'Bianwen', 'Baopuzi', 'Jueju'],
+          answer: 0,
+          explanation: 'La prosa del Chunqiu se caracteriza justo por esa condensación extrema.',
+          example: 'Chunqiu (Anales de primaveras y otoños)',
+          key: 'Es un patrón formal muy útil para distinguirlo de otros textos en examen.'
+        }
+      ];
+
+      const filters = ['Todo', ...new Set(questions.map((item) => item.topic))];
+      const state = {
+        activeFilter: 'Todo',
+        filtered: [...questions],
+        currentIndex: 0,
+        score: 0,
+        answered: false,
+        answeredCount: 0,
+        mode: 'practice',
+        selectedAnswer: null,
+        showFilters: false,
+        questionSet: '40',
+        examResponses: [],
+        examSelections: []
+      };
+
+      const filtersWrap = document.getElementById('filters-wrap');
+      const filtersNode = document.getElementById('filters');
+      const questionTopic = document.getElementById('question-topic');
+      const questionEra = document.getElementById('question-era');
+      const questionText = document.getElementById('question-text');
+      const answersNode = document.getElementById('answers');
+      const feedback = document.getElementById('feedback');
+      const feedbackTitle = document.getElementById('feedback-title');
+      const feedbackText = document.getElementById('feedback-text');
+      const factExample = document.getElementById('fact-example');
+      const factKey = document.getElementById('fact-key');
+      const prevBtn = document.getElementById('prev-btn');
+      const nextBtn = document.getElementById('next-btn');
+      const restartBtn = document.getElementById('restart-btn');
+      const practiceModeBtn = document.getElementById('practice-mode');
+      const examModeBtn = document.getElementById('exam-mode');
+      const set40Btn = document.getElementById('set-40');
+      const setAllBtn = document.getElementById('set-all');
+      const toggleFiltersBtn = document.getElementById('toggle-filters');
+      const scorePill = document.getElementById('score-pill');
+      const progressPill = document.getElementById('progress-pill');
+      const modePill = document.getElementById('mode-pill');
+      const setPill = document.getElementById('set-pill');
+      const progressBar = document.getElementById('progress-bar');
+      const resultBox = document.getElementById('result-box');
+
+      function getQuestionPool(filter = state.activeFilter) {
+        const base = filter === 'Todo' ? questions : questions.filter((item) => item.topic === filter);
+        const shuffled = shuffle(base);
+
+        if (state.questionSet === 'all') {
+          return shuffled;
+        }
+
+        return shuffled.slice(0, Math.min(40, shuffled.length));
+      }
+
+      function shuffle(list) {
+        const copy = [...list];
+        for (let i = copy.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+      }
+
+      function renderFilters() {
+        filtersNode.innerHTML = '';
+        filters.forEach((filter) => {
+          const button = document.createElement('button');
+          button.className = `filter${filter === state.activeFilter ? ' active' : ''}`;
+          button.textContent = filter;
+          button.addEventListener('click', () => applyFilter(filter));
+          filtersNode.appendChild(button);
+        });
+      }
+
+      function applyFilter(filter) {
+        state.activeFilter = filter;
+        state.filtered = getQuestionPool(filter);
+        state.currentIndex = 0;
+        state.score = 0;
+        state.answered = false;
+        state.answeredCount = 0;
+        state.selectedAnswer = null;
+        state.examResponses = [];
+        state.examSelections = new Array(state.filtered.length).fill(null);
+        resultBox.classList.remove('visible');
+        renderFilters();
+        renderQuestion();
+      }
+
+      function renderMode() {
+        practiceModeBtn.classList.toggle('active', state.mode === 'practice');
+        examModeBtn.classList.toggle('active', state.mode === 'exam');
+        modePill.textContent = `Modo: ${state.mode === 'practice' ? 'práctica' : 'examen'}`;
+        scorePill.textContent = state.mode === 'exam' && state.currentIndex < state.filtered.length ? 'Aciertos: ocultos' : `Aciertos: ${state.score}`;
+        prevBtn.classList.toggle('hidden', state.mode !== 'exam');
+      }
+
+      function renderQuestionSet() {
+        set40Btn.classList.toggle('active', state.questionSet === '40');
+        setAllBtn.classList.toggle('active', state.questionSet === 'all');
+        setPill.textContent = `Bloque: ${state.questionSet === '40' ? '40' : 'todas'}`;
+      }
+
+      function renderFilterVisibility() {
+        filtersWrap.classList.toggle('visible', state.showFilters);
+        toggleFiltersBtn.classList.toggle('active', state.showFilters);
+        toggleFiltersBtn.textContent = state.showFilters ? 'Ocultar temas' : 'Mostrar temas';
+      }
+
+      function updateHeader() {
+        progressPill.textContent = `Pregunta ${Math.min(state.currentIndex + 1, state.filtered.length)}/${state.filtered.length}`;
+        const progress = state.filtered.length ? (state.answeredCount / state.filtered.length) * 100 : 0;
+        progressBar.style.width = `${progress}%`;
+        renderMode();
+        renderQuestionSet();
+      }
+
+      function renderQuestion() {
+        feedback.classList.remove('visible');
+        answersNode.innerHTML = '';
+
+        if (!state.filtered.length) {
+          questionTopic.textContent = 'Sin preguntas';
+          questionEra.textContent = '—';
+          questionText.textContent = 'No hay preguntas en este bloque.';
+          nextBtn.disabled = true;
+          prevBtn.disabled = true;
+          updateHeader();
+          return;
+        }
+
+        if (state.currentIndex >= state.filtered.length) {
+          showResults();
+          return;
+        }
+
+        const current = state.filtered[state.currentIndex];
+        state.selectedAnswer = state.mode === 'exam' ? state.examSelections[state.currentIndex] : null;
+        questionTopic.textContent = `Tema: ${current.topic}`;
+        questionEra.textContent = `Aparición: ${current.era}`;
+        questionText.textContent = current.question;
+        resultBox.classList.remove('visible');
+        prevBtn.disabled = state.mode !== 'exam' || state.currentIndex === 0;
+
+        current.options.forEach((option, index) => {
+          const button = document.createElement('button');
+          button.className = 'answer';
+          button.textContent = `${index + 1}. ${option}`;
+          if (state.mode === 'exam' && state.selectedAnswer === index) {
+            button.classList.add('selected');
+          }
+          button.addEventListener('click', () => handleOptionClick(index));
+          answersNode.appendChild(button);
+        });
+
+        if (state.mode === 'exam') {
+          nextBtn.disabled = state.selectedAnswer === null;
+          nextBtn.textContent = state.currentIndex === state.filtered.length - 1 ? 'Finalizar' : 'Siguiente';
+        } else {
+          nextBtn.disabled = true;
+          nextBtn.textContent = 'Siguiente';
+        }
+
+        updateHeader();
+      }
+
+      function handleOptionClick(index) {
+        if (state.answered) {
+          return;
+        }
+
+        if (state.mode === 'practice') {
+          handleAnswer(index);
+          return;
+        }
+
+        state.selectedAnswer = index;
+        state.examSelections[state.currentIndex] = index;
+        nextBtn.disabled = false;
+
+        [...answersNode.querySelectorAll('.answer')].forEach((button, buttonIndex) => {
+          button.classList.toggle('selected', buttonIndex === index);
+        });
+      }
+
+      function handleAnswer(index) {
+        if (state.answered) {
+          return;
+        }
+
+        state.answered = true;
+        state.answeredCount += 1;
+        const current = state.filtered[state.currentIndex];
+        const buttons = [...answersNode.querySelectorAll('.answer')];
+        const isCorrect = index === current.answer;
+
+        buttons.forEach((button, buttonIndex) => {
+          button.disabled = true;
+          button.classList.remove('selected');
+          if (state.mode === 'practice') {
+            if (buttonIndex === current.answer) {
+              button.classList.add('correct');
+            } else if (buttonIndex === index) {
+              button.classList.add('wrong');
+            } else {
+              button.classList.add('dimmed');
+            }
+          } else {
+            if (buttonIndex === index) {
+              button.classList.add('selected');
+            } else {
+              button.classList.add('dimmed');
+            }
+          }
+        });
+
+        if (isCorrect) {
+          state.score += 1;
+        }
+
+        state.examResponses.push({
+          topic: current.topic,
+          era: current.era,
+          question: current.question,
+          options: current.options,
+          selected: index,
+          correct: current.answer,
+          isCorrect,
+          explanation: current.explanation,
+          example: current.example,
+          key: current.key
+        });
+
+        if (state.mode === 'practice') {
+          feedbackTitle.textContent = isCorrect ? 'Correcto' : 'Revisa esta idea';
+          feedbackText.textContent = current.explanation;
+          factExample.textContent = current.example;
+          factKey.textContent = current.key;
+          feedback.classList.add('visible');
+        } else {
+          feedback.classList.remove('visible');
+        }
+
+        nextBtn.disabled = false;
+        updateHeader();
+      }
+
+      function showResults() {
+        questionTopic.textContent = 'Bloque completado';
+        questionEra.textContent = state.activeFilter === 'Todo' ? 'Repaso general' : state.activeFilter;
+        questionText.textContent = 'Has terminado este bloque de preguntas.';
+        answersNode.innerHTML = '';
+        feedback.classList.remove('visible');
+        nextBtn.disabled = true;
+        prevBtn.disabled = true;
+        const total = state.filtered.length;
+        const percentage = total ? Math.round((state.score / total) * 100) : 0;
+        let message = 'Buen repaso.';
+
+        if (percentage >= 85) {
+          message = 'Dominio muy sólido del temario literario.';
+        } else if (percentage >= 65) {
+          message = 'Vas bien, pero conviene reforzar matices entre géneros y estilos.';
+        } else {
+          message = 'Conviene revisar la chuleta y repetir el bloque.';
+        }
+
+        const reviewItems = state.examResponses
+          .map((item, index) => {
+            const selectedText = item.selected !== null && item.selected !== undefined ? item.options[item.selected] : 'Sin responder';
+            const correctText = item.options[item.correct];
+            return `
+              <article class="review-item ${item.isCorrect ? 'ok' : 'bad'}">
+                <h4>${index + 1}. ${item.question}</h4>
+                <p><span class="review-label">Tema:</span> ${item.topic} · ${item.era}</p>
+                <p><span class="review-label">Tu respuesta:</span> ${selectedText}</p>
+                <p><span class="review-label">Respuesta correcta:</span> ${correctText}</p>
+                <p><span class="review-label">Explicación:</span> ${item.explanation}</p>
+                <p><span class="review-label">Texto/ejemplo:</span> ${item.example}</p>
+                <p><span class="review-label">Clave literaria:</span> ${item.key}</p>
+              </article>
+            `;
+          })
+          .join('');
+
+        resultBox.innerHTML = `
+          <h3>Resultado final</h3>
+          <p>Has acertado <strong>${state.score}</strong> de <strong>${total}</strong> preguntas (${percentage}%). ${message}</p>
+          <div class="review-list">${reviewItems}</div>
+        `;
+        resultBox.classList.add('visible');
+        progressPill.textContent = `Pregunta ${total}/${total}`;
+        progressBar.style.width = '100%';
+        scorePill.textContent = `Aciertos: ${state.score}`;
+      }
+
+      function setMode(mode) {
+        state.mode = mode;
+        applyFilter(state.activeFilter);
+      }
+
+      function setQuestionSet(questionSet) {
+        state.questionSet = questionSet;
+        applyFilter(state.activeFilter);
+      }
+
+      function handleKeyboardShortcuts(event) {
+        if (event.metaKey || event.ctrlKey || event.altKey) {
+          return;
+        }
+
+        const tag = document.activeElement?.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
+          return;
+        }
+
+        const numericIndex = ['1', '2', '3', '4'].indexOf(event.key);
+        if (numericIndex !== -1) {
+          const buttons = [...answersNode.querySelectorAll('.answer')];
+          const button = buttons[numericIndex];
+          if (button && !button.disabled) {
+            event.preventDefault();
+            handleOptionClick(numericIndex);
+          }
+          return;
+        }
+
+        if (event.key === 'Enter') {
+          if (state.mode === 'exam' && !nextBtn.disabled) {
+            event.preventDefault();
+            nextBtn.click();
+            return;
+          }
+
+          if (state.answered && !nextBtn.disabled) {
+            event.preventDefault();
+            nextBtn.click();
+          }
+        }
+      }
+
+      nextBtn.addEventListener('click', () => {
+        if (state.mode === 'exam') {
+          if (state.selectedAnswer === null) {
+            return;
+          }
+
+          if (state.currentIndex === state.filtered.length - 1) {
+            state.examResponses = state.filtered.map((item, idx) => {
+              const selected = state.examSelections[idx];
+              return {
+                topic: item.topic,
+                era: item.era,
+                question: item.question,
+                options: item.options,
+                selected,
+                correct: item.answer,
+                isCorrect: selected === item.answer,
+                explanation: item.explanation,
+                example: item.example,
+                key: item.key
+              };
+            });
+            state.score = state.examResponses.filter((item) => item.isCorrect).length;
+            state.answeredCount = state.filtered.length;
+            state.currentIndex = state.filtered.length;
+            renderQuestion();
+            return;
+          }
+
+          state.answeredCount = state.examSelections.filter((item) => item !== null).length;
+          state.currentIndex += 1;
+          state.answered = false;
+          renderQuestion();
+          return;
+        }
+
+        state.currentIndex += 1;
+        state.answered = false;
+        renderQuestion();
+      });
+
+      prevBtn.addEventListener('click', () => {
+        if (state.mode !== 'exam' || state.currentIndex === 0) {
+          return;
+        }
+
+        state.currentIndex -= 1;
+        state.answeredCount = state.examSelections.filter((item) => item !== null).length;
+        renderQuestion();
+      });
+
+      restartBtn.addEventListener('click', () => {
+        applyFilter(state.activeFilter);
+      });
+
+      practiceModeBtn.addEventListener('click', () => setMode('practice'));
+      examModeBtn.addEventListener('click', () => setMode('exam'));
+      set40Btn.addEventListener('click', () => setQuestionSet('40'));
+      setAllBtn.addEventListener('click', () => setQuestionSet('all'));
+      toggleFiltersBtn.addEventListener('click', () => {
+        state.showFilters = !state.showFilters;
+        renderFilterVisibility();
+      });
+      window.addEventListener('keydown', handleKeyboardShortcuts);
+
+      renderFilters();
+      renderFilterVisibility();
+      renderMode();
+      renderQuestionSet();
+      applyFilter('Todo');
+    </script>
+  </body>
+</html>
